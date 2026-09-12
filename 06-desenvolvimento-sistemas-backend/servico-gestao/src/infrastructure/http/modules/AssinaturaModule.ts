@@ -7,6 +7,8 @@ import { CriarAssinaturaUseCase } from '../../../application/use-cases/CriarAssi
 import { ListarAssinaturasPorTipoUseCase } from '../../../application/use-cases/ListarAssinaturasPorTipoUseCase';
 import { ListarAssinaturasPorClienteUseCase } from '../../../application/use-cases/ListarAssinaturasPorClienteUseCase';
 import { ListarAssinaturasPorPlanoUseCase } from '../../../application/use-cases/ListarAssinaturasPorPlanoUseCase';
+import { ProcessarPagamentoAssinaturaUseCase } from '../../../application/use-cases/ProcessarPagamentoAssinaturaUseCase';
+import { VerificarAssinaturaAtivaUseCase } from '../../../application/use-cases/VerificarAssinaturaAtivaUseCase';
 import {
   ASSINATURA_REPOSITORY_TOKEN,
   CLIENTE_REPOSITORY_TOKEN,
@@ -49,6 +51,18 @@ import { IPlanoRepository } from '../../../domain/repositories/IPlanoRepository'
       useFactory: (assRepo: IAssinaturaRepository, planoRepo: IPlanoRepository) =>
         new ListarAssinaturasPorPlanoUseCase(assRepo, planoRepo),
       inject: [ASSINATURA_REPOSITORY_TOKEN, PLANO_REPOSITORY_TOKEN],
+    },
+    {
+      provide: ProcessarPagamentoAssinaturaUseCase,
+      useFactory: (assRepo: IAssinaturaRepository) =>
+        new ProcessarPagamentoAssinaturaUseCase(assRepo),
+      inject: [ASSINATURA_REPOSITORY_TOKEN],
+    },
+    {
+      provide: VerificarAssinaturaAtivaUseCase,
+      useFactory: (assRepo: IAssinaturaRepository) =>
+        new VerificarAssinaturaAtivaUseCase(assRepo),
+      inject: [ASSINATURA_REPOSITORY_TOKEN],
     },
   ],
 })

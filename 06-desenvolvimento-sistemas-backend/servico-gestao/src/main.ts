@@ -60,7 +60,30 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   const configService = app.get(ConfigService);
-  const PORT = configService.get<number>('PORT') || 3000;
+  const PORT = configService.get<number>('PORT') || 3001;
+
+  // 7. Conexão com Message Broker RabbitMQ (Transport.RMQ) para eventos assíncronos
+  const rmqUrl =
+    configService.get<string>('RABBITMQ_URL') ||
+    process.env.RABBITMQ_URL ||
+    'amqp://guest:guest@localhost:5672';
+  try {
+    app.connectMicroservice({
+      transport: 5, // Transport.RMQ
+      options: {
+        urls: [rmqUrl],
+        queue: 'gestao_queue',
+        queueOptions: {
+          durable: false,
+        },
+      },
+    });
+    await app.startAllMicroservices();
+    app.get(Logger).log(`[RabbitMQ] Inscrito na fila 'gestao_queue' para eventos de faturamento.`);
+  } catch (err: any) {
+    app.get(Logger).warn(`[RabbitMQ] Não conectado ao broker (${err?.message || err}). Operando com fallback HTTP webhook.`);
+  }
+
   await app.listen(PORT);
 
   const logger = app.get(Logger);

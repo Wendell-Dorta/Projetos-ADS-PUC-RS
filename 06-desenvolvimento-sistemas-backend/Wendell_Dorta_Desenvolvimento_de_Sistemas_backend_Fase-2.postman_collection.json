@@ -1,0 +1,686 @@
+{
+	"info": {
+		"_postman_id": "b78b91dc-e3a1-432d-9df1-897fa2ef9b2c",
+		"name": "Wendell_Dorta_Desenvolvimento_de_Sistemas_backend_Fase-2",
+		"description": "Coleção completa e atualizada da Fase 2 - Wendell de Souza Dorta (Matrícula: 25250061-6). Contém todos os endpoints do ServicoGestao, ServicoFaturamento, ServicoPlanosAtivos e API Gateway unificado (porta 3000), com asserções de teste automatizadas.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ServicoGerenciamentoPlanos",
+			"item": [
+				{
+					"name": "Lista Clientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Resposta deve ser um array com clientes\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.be.at.least(10);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/clientes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"clientes"
+							]
+						},
+						"description": "### GET /gerenciaplanos/clientes\n\nRecupera a lista completa de clientes cadastrados no ServicoGestao através do API Gateway."
+					},
+					"response": []
+				},
+				{
+					"name": "Lista planos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Resposta deve ser um array com planos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.be.at.least(5);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/planos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"planos"
+							]
+						},
+						"description": "### GET /gerenciaplanos/planos\n\nRecupera a lista de planos cadastrados no ServicoGestao através do API Gateway."
+					},
+					"response": []
+				},
+				{
+					"name": "Nova Assinatura",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Assinatura deve conter campos obrigatórios\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('codigo');",
+									"    pm.expect(jsonData.codCli).to.eql(3);",
+									"    pm.expect(jsonData.codPlano).to.eql(5);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"codCli\": 3,\n    \"codPlano\": 5,\n    \"custoFinal\": 10.99,\n    \"descricao\": \"Cliente já havia negociado em 2022 e desistido da assinatura.\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/assinaturas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas"
+							]
+						},
+						"description": "### POST /gerenciaplanos/assinaturas\n\nCadastra uma nova assinatura para um cliente."
+					},
+					"response": []
+				},
+				{
+					"name": "Atualiza Custo Mensal Plano",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Custo mensal deve estar atualizado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.custoMensal).to.eql(0.01);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"custoMensal\": 0.01\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/planos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"planos",
+								"1"
+							]
+						},
+						"description": "### PATCH /gerenciaplanos/planos/:idPlano\n\nAtualiza o custo mensal do plano ID 1."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas Ativos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Todas as assinaturas retornadas devem ter status ATIVO\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(item) {",
+									"        pm.expect(item.status).to.eql('ATIVO');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/assinaturas/ATIVOS",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas",
+								"ATIVOS"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturas/ATIVOS\n\nRetorna assinaturas ativas (pagamento realizado nos últimos 30 dias)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas Todos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Deve retornar lista com assinaturas\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/assinaturas/TODOS",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas",
+								"TODOS"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturas/TODOS\n\nRetorna todas as assinaturas cadastradas."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas Cancelados",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Todas as assinaturas retornadas devem ter status CANCELADO\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(item) {",
+									"        pm.expect(item.status).to.eql('CANCELADO');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/assinaturas/CANCELADOS",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas",
+								"CANCELADOS"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturas/CANCELADOS\n\nRetorna assinaturas canceladas (sem pagamento há mais de 30 dias)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas por Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Todas as assinaturas devem pertencer ao cliente 2\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(item) {",
+									"        pm.expect(item.codCli).to.eql(2);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/asscli/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"asscli",
+								"2"
+							]
+						},
+						"description": "### GET /gerenciaplanos/asscli/:codcli\n\nRecupera assinaturas vinculadas ao cliente 2."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas por Plano",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Todas as assinaturas devem pertencer ao plano 2\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(item) {",
+									"        pm.expect(item.codPlano).to.eql(2);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gerenciaplanos/assinaturaplano/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturaplano",
+								"2"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturaplano/:codplano\n\nRecupera assinaturas do plano 2."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ServicoFaturamento",
+			"item": [
+				{
+					"name": "Registrar Pagamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Resposta deve confirmar sucesso e emissão de eventos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.sucesso).to.eql(true);",
+									"    pm.expect(jsonData.pagamento.codAss).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dia\": 1,\n    \"mes\": 1,\n    \"ano\": 2025,\n    \"codAss\": 1,\n    \"valorPago\": 0.01\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/registrarpagamento",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"registrarpagamento"
+							]
+						},
+						"description": "### POST /registrarpagamento\n\nRegistra o pagamento no banco isolado de faturamento e emite os eventos PagamentoPlanoServicoGestao e PagamentoPlanoServicoPlanosAtivos."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Histórico de Pagamentos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Deve retornar array de pagamentos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/faturamento/pagamentos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"faturamento",
+								"pagamentos"
+							]
+						},
+						"description": "### GET /faturamento/pagamentos\n\nLista todos os pagamentos armazenados no banco do ServicoFaturamento."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ServicoPlanosAtivos",
+			"item": [
+				{
+					"name": "Assinaturas Validas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Resposta deve ser um booleano (true ou false)\", function () {",
+									"    var body = pm.response.text();",
+									"    pm.expect(body === 'true' || body === 'false').to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/planosativos/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"planosativos",
+								"5"
+							]
+						},
+						"description": "### GET /planosativos/:codass\n\nConsulta se a assinatura 5 está ativa, utilizando cache interno em memória (Cache-Aside pattern)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinatura Recente (codass 1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Resposta deve ser um booleano\", function () {",
+									"    var body = pm.response.text();",
+									"    pm.expect(body === 'true' || body === 'false').to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/planosativos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"planosativos",
+								"1"
+							]
+						},
+						"description": "### GET /planosativos/1\n\nConsulta o status da assinatura 1 no ServicoPlanosAtivos."
+					},
+					"response": []
+				},
+				{
+					"name": "Métricas do Cache em Memória",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Deve retornar estatísticas do cache\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.metricas).to.have.property('hits');",
+									"    pm.expect(jsonData.metricas).to.have.property('misses');",
+									"    pm.expect(jsonData.metricas).to.have.property('hitRatio');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/planosativos/cache/metricas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"planosativos",
+								"cache",
+								"metricas"
+							]
+						},
+						"description": "### GET /planosativos/cache/metricas\n\nRetorna estatísticas de performance do cache (Hits, Misses, Hit Ratio)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIGateway_Observabilidade",
+			"item": [
+				{
+					"name": "Health Check Unificado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 ou 207\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 207]);",
+									"});",
+									"pm.test(\"Health check deve conter status dos microsserviços\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData).to.have.property('downstreamServices');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"health"
+							]
+						},
+						"description": "### GET /health\n\nVerifica o status de saúde do API Gateway e dos 3 microsserviços downstream (Gestao, Faturamento, PlanosAtivos)."
+					},
+					"response": []
+				},
+				{
+					"name": "Status e Circuit Breakers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code deve ser 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Deve conter dados dos Circuit Breakers\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.circuitBreakers).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/gateway/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gateway",
+								"status"
+							]
+						},
+						"description": "### GET /gateway/status\n\nRetorna informações operacionais do Gateway, rotas mapeadas e estados dos Circuit Breakers."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

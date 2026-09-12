@@ -37,4 +37,21 @@ export class InMemoryAssinaturaRepository implements IAssinaturaRepository {
     this.items.push(newAss);
     return newAss;
   }
+
+  async atualizarPagamento(codigo: number, dataPagamento: Date): Promise<Assinatura | null> {
+    const index = this.items.findIndex((ass) => ass.codigo === codigo);
+    if (index === -1) return null;
+    const current = this.items[index];
+    const updated = new Assinatura(
+      current.codigo,
+      current.codPlano,
+      current.codCli,
+      current.periodoFidelidade,
+      dataPagamento,
+      current.custoFinal,
+      current.descricao,
+    );
+    this.items[index] = updated;
+    return updated;
+  }
 }

@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # ==============================================================================
+  # 1. MESSAGE BROKER (RabbitMQ)
+  # ==============================================================================
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: operadora-rabbitmq
+    ports:
+      - "5672:5672"     # Porta AMQP do Broker
+      - "15672:15672"   # Painel Web de Gerenciamento do RabbitMQ
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-network
+
+  # ==============================================================================
+  # 2. SERVIÇO PRINCIPAL: ServicoGestao (Porta 3001)
+  # ==============================================================================
+  servico-gestao:
+    build:
+      context: ./servico-gestao
+      dockerfile: Dockerfile
+    container_name: operadora-servico-gestao
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL=file:./dev.db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend-network
+
+  # ==============================================================================
+  # 3. MICROSSERVIÇO: ServicoFaturamento (Porta 3002)
+  # ==============================================================================
+  servico-faturamento:
+    build:
+      context: ./servico-faturamento
+      dockerfile: Dockerfile
+    container_name: operadora-servico-faturamento
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - DATABASE_URL=file:./faturamento.db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - SERVICO_GESTAO_URL=http://servico-gestao:3001
+      - SERVICO_PLANOS_ATIVOS_URL=http://servico-planos-ativos:3003
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      servico-gestao:
+        condition: service_started
+    networks:
+      - backend-network
+
+  # ==============================================================================
+  # 4. MICROSSERVIÇO: ServicoPlanosAtivos (Porta 3003)
+  # ==============================================================================
+  servico-planos-ativos:
+    build:
+      context: ./servico-planos-ativos
+      dockerfile: Dockerfile
+    container_name: operadora-servico-planos-ativos
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - SERVICO_GESTAO_URL=http://servico-gestao:3001
+      - CACHE_TTL_MS=300000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      servico-gestao:
+        condition: service_started
+    networks:
+      - backend-network
+
+  # ==============================================================================
+  # 5. API GATEWAY: Ponto Único de Entrada (Porta 3000)
+  # ==============================================================================
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: operadora-api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - SERVICO_GESTAO_URL=http://servico-gestao:3001
+      - SERVICO_FATURAMENTO_URL=http://servico-faturamento:3002
+      - SERVICO_PLANOS_ATIVOS_URL=http://servico-planos-ativos:3003
+    depends_on:
+      - servico-gestao
+      - servico-faturamento
+      - servico-planos-ativos
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge

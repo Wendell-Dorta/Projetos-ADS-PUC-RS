@@ -1,0 +1,36 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway e Reverse Proxy unificado para microsserviços (Fase 2)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test": "jest"
+  },
+  "keywords": ["api-gateway", "reverse-proxy", "circuit-breaker", "microservices"],
+  "author": "Wendell de Souza Dorta",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "helmet": "^8.3.0",
+    "http-proxy-middleware": "^2.0.6",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^30.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.11.24",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}

@@ -17,4 +17,5 @@ export interface IAssinaturaRepository {
   findByCliente(codCli: number): Promise<Assinatura[]>;
   findByPlano(codPlano: number): Promise<Assinatura[]>;
   save(assinatura: CriarAssinaturaProps): Promise<Assinatura>;
+  atualizarPagamento(codigo: number, dataPagamento: Date): Promise<Assinatura | null>;
 }

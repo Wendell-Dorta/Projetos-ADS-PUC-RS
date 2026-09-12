@@ -51,3 +51,11 @@ export class InvalidFilterTypeError extends DomainError {
     );
   }
 }
+
+export class AssinaturaNotFoundError extends DomainError {
+  override readonly statusCode: number = 404;
+
+  constructor(public readonly codAss: number) {
+    super(`Assinatura com código ${codAss} não foi encontrada.`);
+  }
+}

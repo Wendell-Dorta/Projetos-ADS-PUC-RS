@@ -24,7 +24,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3001
 
 # Copia manifestos e código compilado do builder
 COPY package*.json ./
@@ -33,7 +33,7 @@ COPY prisma ./prisma/
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 
-EXPOSE 3000
+EXPOSE 3001
 
 # Executa migrações, seeding e inicia a aplicação NestJS
 CMD ["sh", "-c", "npx prisma migrate deploy && npm run seed && node dist/main.js"]

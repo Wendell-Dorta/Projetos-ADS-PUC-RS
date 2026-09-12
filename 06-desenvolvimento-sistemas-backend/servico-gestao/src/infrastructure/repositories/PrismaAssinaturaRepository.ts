@@ -79,4 +79,17 @@ export class PrismaAssinaturaRepository implements IAssinaturaRepository {
     });
     return this.toEntity(record);
   }
+
+  async atualizarPagamento(codigo: number, dataPagamento: Date): Promise<Assinatura | null> {
+    const record = await this.prisma.assinatura.findUnique({
+      where: { codigo },
+    });
+    if (!record) return null;
+
+    const updated = await this.prisma.assinatura.update({
+      where: { codigo },
+      data: { dataUltimoPagamento: dataPagamento },
+    });
+    return this.toEntity(updated);
+  }
 }

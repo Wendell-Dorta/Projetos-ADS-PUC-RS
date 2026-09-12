@@ -1,0 +1,27 @@
+{
+  "name": "wendell-dorta-desenvol-sistemas-backend-fase-2",
+  "version": "2.0.0",
+  "description": "Sistema Completo de Controle de Planos e Faturamento - Arquitetura de Microsserviços com NestJS, RabbitMQ, SQLite, Cache e API Gateway (Fase 2)",
+  "author": "Wendell de Souza Dorta",
+  "license": "ISC",
+  "scripts": {
+    "setup:gestao": "cd servico-gestao && npm run setup",
+    "setup:faturamento": "cd servico-faturamento && npm run setup",
+    "setup:all": "npm run setup:gestao && npm run setup:faturamento",
+    "dev:gestao": "cd servico-gestao && npm run dev",
+    "dev:faturamento": "cd servico-faturamento && npm run dev",
+    "dev:planos": "cd servico-planos-ativos && npm run dev",
+    "dev:gateway": "cd api-gateway && npm run dev",
+    "test:gestao": "cd servico-gestao && npm test",
+    "test:faturamento": "cd servico-faturamento && npm test",
+    "test:planos": "cd servico-planos-ativos && npm test",
+    "test:gateway": "cd api-gateway && npm test",
+    "test:all": "npm run test:gestao && npm run test:faturamento && npm run test:planos && npm run test:gateway",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,23 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Pagamento {
+  codigo         Int      @id @default(autoincrement())
+  codAss         Int
+  valorPago      Float
+  dataPagamento  DateTime
+  dia            Int
+  mes            Int
+  ano            Int
+  criadoEm       DateTime @default(now())
+
+  @@index([codAss])
+  @@index([dataPagamento])
+  @@map("pagamentos")
+}
