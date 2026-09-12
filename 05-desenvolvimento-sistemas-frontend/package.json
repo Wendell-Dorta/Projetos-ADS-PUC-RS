@@ -1,0 +1,50 @@
+{
+  "name": "series-journal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.2.2",
+    "@mui/icons-material": "^9.0.1",
+    "@mui/material": "^9.0.1",
+    "@mui/material-nextjs": "^9.0.1",
+    "@tanstack/react-query": "^5.100.10",
+    "axios": "^1.16.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.38.0",
+    "next": "^16.2.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.75.0",
+    "react-toastify": "^11.1.0",
+    "zod": "^4.4.3"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "cypress": "^15.15.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "prettier": "^3.8.3",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  }
+}
