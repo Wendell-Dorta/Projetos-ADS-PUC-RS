@@ -1,56 +1,48 @@
 import { validate } from "bycontract";
 import { Sala, Engine, Ferramenta, Objeto } from "./Basicas.js";
-// Importa classes base: Sala, Engine, Ferramenta, Objeto
-import { PaEnferrujada, PanoUmedo, FosforosSecos, Bateria, ChaveEnferrujada, ChavePequena, LanternaCarregada, AmuletoAncestral } from "./FerramentasAventura.js";
-// Importa todas as subclasses de Ferramenta
-import { CandelabroEmpoeirado, LivrosAntigos, ArmarioTrancado, FosforosUmdos, BauAntigo, BilheteRasgado, Pedestal, LanternaDescarregada as LanternaDescarregadaObjeto } from "./ObjetosAventura.js";
-// Importa todas as subclasses de Objeto (LanternaDescarregada renomeada para evitar conflito com a Ferramenta)
+// <<<<----- CORREÇÃO CHAVE AQUI: Adicionar Olhos e ChaveAntiga à lista de FerramentasAventura.js ----->>>>
+import { PaEnferrujada, PanoUmedo, FosforosSecos, Bateria, ChaveEnferrujada, ChavePequena, LanternaCarregada, AmuletoAncestral, ChaveMisteriosa, RegadorAbencoado, RoloBarbante, BaldeAgua, PocaoMagica, Olhos, ChaveAntiga } from "./FerramentasAventura.js";
+import { CandelabroEmpoeirado, LivrosAntigos, ArmarioTrancado, FosforosUmdos, BauAntigo, BilheteRasgado, Pedestal, LanternaDescarregada as LanternaDescarregadaObjeto, PlantaMisteriosaRessequida, PortaoTrancadoAntigo, CaixaVelhaTrancada, DiarioAntigo, IngredientesEstranhos, PiaSeca, DestilariaQuebrada, RitualMisterioso } from "./ObjetosAventura.js";
 
 /**
  * @class JardimSecreto
  * @augments Sala
- * @description Sala inicial do jogo. Contém a lógica para usar a pá e encontrar a chave enferrujada.
+ * @description Sala inicial do jogo. Contém a lógica para usar a pá e encontrar a chave enferrujada,
+ * e a lógica da Fase 2 para a planta e o portão para a Estufa.
  */
 export class JardimSecreto extends Sala {
-    chaveEnferrujadaEncontrada; // Flag que indica se a chave já foi revelada
+    chaveEnferrujadaEncontrada;
+    #portaoDescoberto; // Estado do portão (ligado ao objeto Planta)
 
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
     constructor(engine) {
         validate(engine, Engine);
         super("Jardim_Secreto", engine);
-        // Ferramenta disponível para ser pega
         this.ferramentas.set("pa_enferrujada", new PaEnferrujada());
         this.chaveEnferrujadaEncontrada = false;
+        
+        // Objetos para Fase 2
+        this.objetos.set("planta_misteriosa_ressequida", new PlantaMisteriosaRessequida());
+        this.objetos.set("portao_trancado_antigo", new PortaoTrancadoAntigo());
+        this.#portaoDescoberto = false; 
     }
 
-    /**
-     * @method usa
-     * @description Sobrescreve o usa() da Sala para adicionar a lógica de cavar no Jardim.
-     * @param {string} ferramentaNome Nome da ferramenta usada.
-     * @param {string} objetoNome Nome do objeto de interação ("terra").
-     * @returns {boolean} True se a ação foi bem-sucedida, False caso contrário.
-     */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
+        let objeto = this.objetos.get(objetoNome);
+        let ferramenta = this.engine.mochila.pega(ferramentaNome);
+
+        if (!objeto || !ferramenta) { // Pré-validação de existência
+            return super.usa(ferramentaNome, objetoNome); 
+        }
+        if (!ferramenta.usar()) { // Tenta usar a ferramenta, ela mesma lida com usos esgotados
+            console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
+            return false;
+        }
+
         if (ferramentaNome === "pa_enferrujada" && objetoNome === "terra") {
-            let pa = this.engine.mochila.pega(ferramentaNome);
-            if (!pa) {
-                console.log(`Ferramenta '${ferramentaNome}' não está na mochila.`);
-                return false;
-            }
-            // A lógica de uso da ferramenta deve vir ANTES da lógica do objeto, pois ela pode falhar.
-            if (!pa.usar()) { 
-                console.log(`A ferramenta '${ferramentaNome}' não pode mais ser usada.`);
-                return false;
-            }
-            
             if (!this.chaveEnferrujadaEncontrada) {
                 console.log("Você cava na terra e encontra uma chave enferrujada!");
-                // Adiciona a nova ferramenta à sala para que o jogador possa pegá-la
                 this.ferramentas.set("chave_enferrujada", new ChaveEnferrujada());
                 this.chaveEnferrujadaEncontrada = true;
             } else {
@@ -58,35 +50,59 @@ export class JardimSecreto extends Sala {
             }
             return true;
         }
-        // Para todas as outras interações (ex: "usa chave_enferrujada em porta"), chama a lógica base
-        return super.usa(ferramentaNome, objetoNome); 
+        else if (objetoNome === "planta_misteriosa_ressequida") { 
+            let planta = objeto;
+            if (!(ferramenta instanceof RegadorAbencoado)) {
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para a planta.`);
+                return false;
+            }
+            if (planta.usar(ferramenta)) {
+                this.#portaoDescoberto = true; 
+                console.log(`Ação realizada com sucesso! ${planta.descricao}`);
+                return true;
+            }
+            return false;
+        }
+        else if (objetoNome === "portao_trancado_antigo") { 
+            let portao = objeto;
+            if (!(ferramenta instanceof ChaveAntiga)) {
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para o portão.`);
+                return false;
+            }
+            if (!this.#portaoDescoberto) { 
+                console.log("Você precisa descobrir como revelar este portão antes de tentar abri-lo.");
+                return false;
+            }
+            if (portao.usar(ferramenta)) {
+                let estufa = this.engine.mapaSalas.get("Estufa_Abandonada");
+                if (estufa && !this.portas.has("Estufa_Abandonada")) {
+                    this.portas.set("Estufa_Abandonada", estufa);
+                    estufa.portas.set("jardim_secreto", this); // Bidirecional: o nome_da_porta é o nome "cru" da sala, em minúsculas
+                    console.log(`Ação realizada com sucesso! ${portao.descricao}`);
+                    console.log("A Estufa Abandonada está agora acessível.");
+                }
+                return true;
+            }
+            return false;
+        }
+        
+        return super.usa(ferramentaNome, objetoNome);
     }
 }
 
 /**
  * @class HallEntrada
  * @augments Sala
- * @description Sala que contém o Candelabro, cuja ativação desbloqueia uma nova porta em outra sala.
  */
 export class HallEntrada extends Sala {
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
     constructor(engine) {
         validate(engine, Engine);
         super("Hall_de_Entrada", engine);
         this.objetos.set("candelabro_empoeirado", new CandelabroEmpoeirado());
         this.ferramentas.set("pano_umedo", new PanoUmedo());
+        this.ferramentas.set("chave_misteriosa", new ChaveMisteriosa());
     }
 
-    /**
-     * @method usa
-     * @description Lógica específica para o candelabro, incluindo a verificação de derrota e o desbloqueio de porta.
-     * @param {string} ferramentaNome Nome da ferramenta usada.
-     * @param {string} objetoNome Nome do objeto de interação.
-     * @returns {boolean} True se a ação foi bem-sucedida.
-     */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
@@ -95,11 +111,9 @@ export class HallEntrada extends Sala {
             let ferramenta = this.engine.mochila.pega(ferramentaNome); 
 
             if (!candelabro || !ferramenta) {
-                console.log(`Não é possível usar '${ferramentaNome}' sobre '${objetoNome}'. Ferramenta ou objeto não disponível ou não está na mochila.`);
-                return false;
+                return super.usa(ferramentaNome, objetoNome);
             }
             
-            // Tenta usar a ferramenta e lida com consumo
             if (!ferramenta.usar()) {
                 console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
                 return false;
@@ -109,27 +123,25 @@ export class HallEntrada extends Sala {
             try {
                 usou = candelabro.usar(ferramenta); 
             } catch (error) {
-                // Captura a exceção de derrota específica do candelabro
                 if (error.message.includes("Fim de Jogo:")) {
                     console.log(error.message); 
-                    this.engine.indicaFimDeJogo(); // Define o fim de jogo
-                    return true; // Retorna true para processamento bem-sucedido (embora seja derrota)
+                    this.engine.indicaFimDeJogo();
+                    return true;
                 }
-                throw error; // Propaga outros erros
+                throw error;
             }
 
             if (usou) {
                 console.log(`Ação realizada com sucesso! Candelabro agora: ${candelabro.descricao}`); 
                 
-                if (candelabro.acaoOk) { // Condição para desbloqueio: Candelabro está Limpo E Aceso
+                if (candelabro.acaoOk) { 
                     let salaLeitura = this.engine.mapaSalas.get("Sala_de_Leitura");
                     let corredorSecreto = this.engine.mapaSalas.get("Corredor_Secreto");
 
-                    // Adiciona a porta se ainda não estiver lá
-                    if (salaLeitura && corredorSecreto && !salaLeitura.portas.has("Corredor_Secreto")) {
+                    if (salaLeitura && corredorSecreto && !salaLeitura.portas.has("corredor_secreto")) { // Chave de porta em minúsculas
+                        salaLeitura.portas.set("corredor_secreto", corredorSecreto); // Chave de porta em minúsculas
+                        corredorSecreto.portas.set("sala_de_leitura", salaLeitura); // Bidirecional
                         console.log("A luz do candelabro revela uma passagem escondida na Sala de Leitura!");
-                        salaLeitura.portas.set("Corredor_Secreto", corredorSecreto);
-                        corredorSecreto.portas.set("Sala_de_Leitura", salaLeitura); // Mapeamento bidirecional
                     }
                 }
                 return true;
@@ -143,30 +155,19 @@ export class HallEntrada extends Sala {
 /**
  * @class SalaLeitura
  * @augments Sala
- * @description Sala com objetos que revelam novas ferramentas (Lanterna Carregada) e portas (Corredor Secreto).
  */
 export class SalaLeitura extends Sala {
-    chavePequenaEncontrada; // Flag que indica se a chave pequena já foi revelada
+    chavePequenaEncontrada;
 
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
     constructor(engine) {
         validate(engine, Engine);
         super("Sala_de_Leitura", engine);
         this.objetos.set("livros_antigos", new LivrosAntigos());
         this.objetos.set("lanterna_descarregada", new LanternaDescarregadaObjeto()); 
         this.chavePequenaEncontrada = false;
+        this.ferramentas.set("olhos", new Olhos()); // Ferramenta para "ler" bilhetes/diários
     }
 
-    /**
-     * @method usa
-     * @description Lógica para usar a lanterna nos livros e carregar a lanterna com a bateria.
-     * @param {string} ferramentaNome Nome da ferramenta usada.
-     * @param {string} objetoNome Nome do objeto de interação.
-     * @returns {boolean} True se a ação foi bem-sucedida.
-     */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
@@ -174,11 +175,8 @@ export class SalaLeitura extends Sala {
         let ferramenta = this.engine.mochila.pega(ferramentaNome);
 
         if (!objeto || !ferramenta) {
-            console.log(`Não é possível usar '${ferramentaNome}' sobre '${objetoNome}'. Ferramenta ou objeto não disponível ou não está na mochila.`);
-            return false;
+            return super.usa(ferramentaNome, objetoNome);
         }
-
-        // Tenta usar a ferramenta (lógica de consumo)
         if (!ferramenta.usar()) { 
             console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
             return false;
@@ -187,26 +185,25 @@ export class SalaLeitura extends Sala {
         if (objetoNome === "livros_antigos") {
             let livros = objeto;
             
-            // Só a LanternaCarregada revela os segredos dos livros
             if (!(ferramenta instanceof LanternaCarregada)) { 
-                console.log(`A ferramenta '${ferramentaNome}' não é adequada para os livros.`);
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para os livros.`);
                 return false;
             }
             
             let usou = livros.usar(ferramenta);
             if (usou && livros.chaveRevelada && !this.chavePequenaEncontrada) {
                 console.log("Você encontra uma chave pequena e uma nova passagem se revela!");
-                // Adiciona a nova ferramenta à sala
                 this.ferramentas.set("chave_pequena", new ChavePequena());
                 this.chavePequenaEncontrada = true;
                 
-                // Desbloqueia o Corredor Secreto a partir do Quarto Principal
                 let quartoPrincipal = this.engine.mapaSalas.get("Quarto_Principal");
                 let corredorSecreto = this.engine.mapaSalas.get("Corredor_Secreto");
                 if (quartoPrincipal && corredorSecreto) {
-                    quartoPrincipal.portas.set("Corredor_Secreto", corredorSecreto);
-                    corredorSecreto.portas.set("Quarto_Principal", quartoPrincipal);
-                    console.log("O Corredor Secreto está agora acessível do Quarto Principal.");
+                    if (!quartoPrincipal.portas.has("corredor_secreto")) { // Chave de porta em minúsculas
+                        quartoPrincipal.portas.set("corredor_secreto", corredorSecreto); // Chave de porta em minúsculas
+                        corredorSecreto.portas.set("quarto_principal", quartoPrincipal); // Bidirecional
+                        console.log("O Corredor Secreto está agora acessível do Quarto Principal.");
+                    }
                 }
                 return true;
             }
@@ -214,19 +211,16 @@ export class SalaLeitura extends Sala {
         } else if (objetoNome === "lanterna_descarregada") {
             let lanternaObjeto = objeto;
             
-            // Só a Bateria interage com a lanterna
             if (!(ferramenta instanceof Bateria)) { 
-                console.log(`A ferramenta '${ferramentaNome}' não é adequada para a lanterna.`);
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para a lanterna.`);
                 return false;
             }
             
             let usou = lanternaObjeto.usar(ferramenta);
             if (usou && lanternaObjeto.carregada) {
                 console.log("A lanterna está carregada! Você pode pegá-la agora.");
-                // Remove o objeto (lanterna descarregada) e o substitui pela Ferramenta (lanterna carregada)
                 this.objetos.delete(objetoNome); 
                 this.ferramentas.set("lanterna_carregada", new LanternaCarregada()); 
-                // A Bateria (ferramenta de 1 uso) já foi consumida pelo .usar() anterior.
                 return true;
             }
             return false;
@@ -239,32 +233,21 @@ export class SalaLeitura extends Sala {
 /**
  * @class CozinhaVelha
  * @augments Sala
- * @description Sala com objetos que guardam ferramentas (Armário) ou requerem transformação (Fósforos Úmidos).
  */
 export class CozinhaVelha extends Sala {
     bateriaEncontrada;
     fosforosSecosDisponiveis;
 
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
     constructor(engine) {
         validate(engine, Engine);
         super("Cozinha_Velha", engine);
         this.objetos.set("armario_trancado", new ArmarioTrancado());
         this.objetos.set("fosforos_umdos", new FosforosUmdos());
+        this.ferramentas.set("regador_abencoado", new RegadorAbencoado()); 
         this.bateriaEncontrada = false;
         this.fosforosSecosDisponiveis = false;
     }
 
-    /**
-     * @method usa
-     * @description Lógica para abrir o armário e secar os fósforos.
-     * @param {string} ferramentaNome Nome da ferramenta usada.
-     * @param {string} objetoNome Nome do objeto de interação.
-     * @returns {boolean} True se a ação foi bem-sucedida.
-     */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
@@ -272,10 +255,8 @@ export class CozinhaVelha extends Sala {
         let ferramenta = this.engine.mochila.pega(ferramentaNome);
 
         if (!objeto || !ferramenta) {
-            console.log(`Não é possível usar '${ferramentaNome}' sobre '${objetoNome}'. Ferramenta ou objeto não disponível ou não está na mochila.`);
-            return false;
+            return super.usa(ferramentaNome, objetoNome);
         }
-
         if (!ferramenta.usar()) {
             console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
             return false;
@@ -284,7 +265,7 @@ export class CozinhaVelha extends Sala {
         if (objetoNome === "armario_trancado") {
             let armario = objeto;
             if (!(ferramenta instanceof ChaveEnferrujada)) { 
-                console.log(`A ferramenta '${ferramentaNome}' não é adequada para o armário.`);
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para o armário.`);
                 return false;
             }
 
@@ -299,14 +280,13 @@ export class CozinhaVelha extends Sala {
         } else if (objetoNome === "fosforos_umdos") {
             let fosforos = objeto;
             if (!(ferramenta instanceof PanoUmedo)) { 
-                console.log(`A ferramenta '${ferramentaNome}' não é adequada para os fósforos.`);
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para os fósforos.`);
                 return false;
             }
 
             let usou = fosforos.usar(ferramenta);
             if (usou && fosforos.secos && !this.fosforosSecosDisponiveis) {
                 console.log("Os fósforos estão secos! Você pode pegá-los.");
-                // Remove o objeto (fósforos úmidos) e o substitui pela Ferramenta (fósforos secos)
                 this.objetos.delete(objetoNome); 
                 this.ferramentas.set("fosforos_secos", new FosforosSecos()); 
                 this.fosforosSecosDisponiveis = true;
@@ -321,46 +301,24 @@ export class CozinhaVelha extends Sala {
 /**
  * @class Despensa
  * @augments Sala
- * @description Sala simples, sem lógica de interação (pode ser expandida).
  */
 export class Despensa extends Sala {
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
+    #caixaAberta;
+    #diarioEncontrado;
+    #baldeAguaEncontrado;
+
     constructor(engine) {
         validate(engine, Engine);
         super("Despensa", engine);
-    }
-}
-
-/**
- * @class QuartoPrincipal
- * @augments Sala
- * @description Sala com o baú que contém a ferramenta final (Amuleto Ancestral).
- */
-export class QuartoPrincipal extends Sala {
-    amuletoEncontrado;
-
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
-    constructor(engine) {
-        validate(engine, Engine);
-        super("Quarto_Principal", engine);
-        this.objetos.set("bau_antigo", new BauAntigo());
-        this.objetos.set("bilhete_rasgado", new BilheteRasgado());
-        this.amuletoEncontrado = false;
+        this.objetos.set("caixa_velha_trancada", new CaixaVelhaTrancada());
+        this.objetos.set("diario_antigo", new DiarioAntigo()); 
+        this.ferramentas.set("rolo_de_barbante", new RoloBarbante()); 
+        this.#caixaAberta = false;
+        this.#diarioEncontrado = false;
+        this.#baldeAguaEncontrado = false;
+        this.ferramentas.set("olhos", new Olhos()); 
     }
 
-    /**
-     * @method usa
-     * @description Lógica para abrir o baú e revelar o amuleto.
-     * @param {string} ferramentaNome Nome da ferramenta usada.
-     * @param {string} objetoNome Nome do objeto de interação.
-     * @returns {boolean} True se a ação foi bem-sucedida.
-     */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
@@ -368,8 +326,75 @@ export class QuartoPrincipal extends Sala {
         let ferramenta = this.engine.mochila.pega(ferramentaNome);
 
         if (!objeto || !ferramenta) {
-            console.log(`Não é possível usar '${ferramentaNome}' sobre '${objetoNome}'. Ferramenta ou objeto não disponível ou não está na mochila.`);
+            return super.usa(ferramentaNome, objetoNome);
+        }
+        if (!ferramenta.usar()) {
+            console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
             return false;
+        }
+
+        if (objetoNome === "caixa_velha_trancada") { 
+            let caixa = objeto;
+            if (!(ferramenta instanceof ChaveMisteriosa)) {
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para a caixa.`);
+                return false;
+            }
+            if (caixa.usar(ferramenta)) {
+                this.#caixaAberta = true;
+                if (!this.#diarioEncontrado) {
+                    this.ferramentas.set("diario_antigo", new DiarioAntigo());
+                    this.#diarioEncontrado = true;
+                }
+                if (!this.#baldeAguaEncontrado) {
+                    this.ferramentas.set("balde_de_agua", new BaldeAgua());
+                    this.#baldeAguaEncontrado = true;
+                }
+                console.log(`Ação realizada com sucesso! ${caixa.descricao}`);
+                return true;
+            }
+            return false;
+        }
+        else if (objetoNome === "diario_antigo") { 
+            let diario = objeto;
+            if (!(ferramenta instanceof Olhos)) { 
+                console.log(`Você não pode ler o '${objetoNome}' com '${ferramenta.nome}'.`);
+                return false;
+            }
+            if (diario.usar(ferramenta)) {
+                 return true;
+            }
+            return false;
+        }
+        
+        return super.usa(ferramentaNome, objetoNome);
+    }
+}
+
+/**
+ * @class QuartoPrincipal
+ * @augments Sala
+ */
+export class QuartoPrincipal extends Sala {
+    amuletoEncontrado;
+
+    constructor(engine) {
+        validate(engine, Engine);
+        super("Quarto_Principal", engine);
+        this.objetos.set("bau_antigo", new BauAntigo());
+        this.objetos.set("bilhete_rasgado", new BilheteRasgado());
+        this.amuletoEncontrado = false;
+        this.ferramentas.set("olhos", new Olhos()); 
+        this.ferramentas.set("chave_antiga", new ChaveAntiga()); 
+    }
+
+    usa(ferramentaNome, objetoNome) {
+        validate(arguments, ["String", "String"]);
+
+        let objeto = this.objetos.get(objetoNome);
+        let ferramenta = this.engine.mochila.pega(ferramentaNome);
+
+        if (!objeto || !ferramenta) {
+            return super.usa(ferramentaNome, objetoNome);
         }
         if (!ferramenta.usar()) {
             console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
@@ -379,17 +404,27 @@ export class QuartoPrincipal extends Sala {
         if (objetoNome === "bau_antigo") {
             let bau = objeto;
             if (!(ferramenta instanceof ChavePequena)) { 
-                console.log(`A ferramenta '${ferramentaNome}' não é adequada para o baú.`);
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para o baú.`);
                 return false;
             }
 
             let usou = bau.usar(ferramenta);
             if (usou && bau.amuletoRevelado && !this.amuletoEncontrado) {
                 console.log("O baú se abre e revela o Amuleto Ancestral!");
-                // Adiciona o Amuleto à sala para ser pego
                 this.ferramentas.set("amuleto_ancestral", new AmuletoAncestral()); 
                 this.amuletoEncontrado = true;
                 return true;
+            }
+            return false;
+        }
+        else if (objetoNome === "bilhete_rasgado") { 
+            let bilhete = objeto;
+            if (!(ferramenta instanceof Olhos)) { 
+                console.log(`Você não pode ler o '${objetoNome}' com '${ferramenta.nome}'.`);
+                return false;
+            }
+            if (bilhete.usar(ferramenta)) {
+                 return true;
             }
             return false;
         }
@@ -400,13 +435,8 @@ export class QuartoPrincipal extends Sala {
 /**
  * @class CorredorSecreto
  * @augments Sala
- * @description Sala de ligação que é desbloqueada dinamicamente por ações em outras salas.
  */
 export class CorredorSecreto extends Sala {
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
     constructor(engine) {
         validate(engine, Engine);
         super("Corredor_Secreto", engine);
@@ -416,26 +446,14 @@ export class CorredorSecreto extends Sala {
 /**
  * @class SantuarioOculto
  * @augments Sala
- * @description A sala final do jogo, onde o objetivo da vitória é alcançado.
  */
 export class SantuarioOculto extends Sala {
-    /**
-     * @constructor
-     * @param {Engine} engine A instância da Engine do jogo.
-     */
     constructor(engine) {
         validate(engine, Engine);
         super("Santuario_Oculto", engine);
         this.objetos.set("pedestal", new Pedestal());
     }
 
-    /**
-     * @method usa
-     * @description Lógica final do jogo: usar o Amuleto no pedestal leva à vitória.
-     * @param {string} ferramentaNome Nome da ferramenta usada.
-     * @param {string} objetoNome Nome do objeto de interação.
-     * @returns {boolean} True se a ação foi bem-sucedida.
-     */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
@@ -443,8 +461,7 @@ export class SantuarioOculto extends Sala {
         let ferramenta = this.engine.mochila.pega(ferramentaNome);
 
         if (!objeto || !ferramenta) {
-            console.log(`Não é possível usar '${ferramentaNome}' sobre '${objetoNome}'. Ferramenta ou objeto não disponível ou não está na mochila.`);
-            return false;
+            return super.usa(ferramentaNome, objetoNome);
         }
         if (!ferramenta.usar()) {
             console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
@@ -454,18 +471,121 @@ export class SantuarioOculto extends Sala {
         if (objetoNome === "pedestal") {
             let pedestal = objeto;
             if (!(ferramenta instanceof AmuletoAncestral)) {
-                console.log(`A ferramenta '${ferramentaNome}' não é adequada para o pedestal.`);
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para o pedestal.`);
                 return false;
             }
 
             let usou = pedestal.usar(ferramenta);
             if (usou) {
-                // Ação de sucesso no objeto; notifica a Engine para terminar o jogo.
                 this.engine.indicaFimDeJogo(); 
                 return true;
             }
             return false;
         }
+        return super.usa(ferramentaNome, objetoNome);
+    }
+}
+
+/**
+ * @class EstufaAbandonada
+ * @augments Sala
+ * @description Nova sala da Fase 2, focada em criar a Poção Mágica.
+ */
+export class EstufaAbandonada extends Sala {
+    #piaComAgua;
+    #destilariaConsertada;
+    #ingredientesAdicionados;
+    #pocaoFeita;
+
+    constructor(engine) {
+        validate(engine, Engine);
+        super("Estufa_Abandonada", engine);
+        this.objetos.set("ingredientes_estranhos", new IngredientesEstranhos());
+        this.objetos.set("pia_seca", new PiaSeca());
+        this.objetos.set("destilaria_quebrada", new DestilariaQuebrada());
+        this.objetos.set("ritual_misterioso", new RitualMisterioso());
+
+        this.#piaComAgua = false;
+        this.#destilariaConsertada = false;
+        this.#ingredientesAdicionados = false;
+        this.#pocaoFeita = false;
+    }
+
+    usa(ferramentaNome, objetoNome) {
+        validate(arguments, ["String", "String"]);
+
+        let objeto = this.objetos.get(objetoNome);
+        let ferramenta = this.engine.mochila.pega(ferramentaNome);
+
+        if (!objeto || !ferramenta) {
+            return super.usa(ferramentaNome, objetoNome);
+        }
+        if (!ferramenta.usar()) {
+            console.log(`A ferramenta '${ferramenta.nome}' não pode mais ser usada.`);
+            return false;
+        }
+
+        if (objetoNome === "pia_seca") {
+            let pia = objeto;
+            if (!(ferramenta instanceof BaldeAgua)) {
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para a pia.`);
+                return false;
+            }
+            if (pia.usar(ferramenta)) {
+                this.#piaComAgua = true;
+                console.log(`Ação realizada com sucesso! ${pia.descricao}`);
+                return true;
+            }
+            return false;
+        }
+        else if (objetoNome === "destilaria_quebrada") {
+            let destilaria = objeto;
+            if (!(ferramenta instanceof RoloBarbante)) {
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para a destilaria.`);
+                return false;
+            }
+            if (destilaria.usar(ferramenta)) {
+                this.#destilariaConsertada = true;
+                this.objetos.delete("destilaria_quebrada"); 
+                console.log(`Ação realizada com sucesso! ${destilaria.descricao}`);
+                return true;
+            }
+            return false;
+        }
+        else if (objetoNome === "ingredientes_estranhos") { 
+            let ingredientes = objeto;
+            if (!this.#destilariaConsertada || !this.#piaComAgua) {
+                console.log("Os ingredientes só podem ser usados na destilaria consertada e com água.");
+                return false;
+            }
+            if (!this.#ingredientesAdicionados) {
+                console.log("Você adiciona os ingredientes e a água na destilaria. Uma poção começa a borbulhar.");
+                this.#ingredientesAdicionados = true;
+                ingredientes.acaoOk = true; 
+                this.ferramentas.set("pocao_magica", new PocaoMagica()); 
+                this.#pocaoFeita = true;
+                return true;
+            }
+            console.log("Os ingredientes já foram adicionados.");
+            return false;
+        }
+        else if (objetoNome === "ritual_misterioso") {
+            let ritual = objeto;
+            if (!(ferramenta instanceof PocaoMagica)) {
+                console.log(`A ferramenta '${ferramenta.nome}' não é adequada para o ritual.`);
+                return false;
+            }
+            if (!this.#pocaoFeita) { 
+                console.log("Você precisa de uma poção mágica para o ritual.");
+                return false;
+            }
+            if (ritual.usar(ferramenta)) {
+                console.log(`Ação realizada com sucesso! ${ritual.descricao}`);
+                return true;
+            }
+            return false;
+        }
+        
         return super.usa(ferramentaNome, objetoNome);
     }
 }

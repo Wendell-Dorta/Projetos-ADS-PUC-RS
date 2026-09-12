@@ -1,8 +1,8 @@
 // JogoAventura.js
 import { Engine } from "./Basicas.js";
 // Importa a classe base Engine.
-import { JardimSecreto, HallEntrada, SalaLeitura, CozinhaVelha, Despensa, QuartoPrincipal, CorredorSecreto, SantuarioOculto } from "./SalasAventura.js";
-// Importa todas as classes de salas específicas do jogo (que devem herdar de Sala).
+import { JardimSecreto, HallEntrada, SalaLeitura, CozinhaVelha, Despensa, QuartoPrincipal, CorredorSecreto, SantuarioOculto, EstufaAbandonada } from "./SalasAventura.js";
+// Importa todas as classes de salas específicas do jogo (incluindo a nova EstufaAbandonada).
 
 /**
  * @class JogoAventura
@@ -17,7 +17,6 @@ export class JogoAventura extends Engine {
     /**
      * @constructor
      * @description Chama o construtor da classe pai (Engine).
-     * O construtor da Engine, por sua vez, chama o método 'criaCenario' desta subclasse.
      */
     constructor() {
         super(); // Inicia a Engine, que chama this.criaCenario() para montar o jogo.
@@ -29,8 +28,7 @@ export class JogoAventura extends Engine {
      * criando todas as salas e definindo as conexões entre elas.
      */
     criaCenario() {
-        // Inicialização defensiva do mapaSalas. Isso é crucial porque o 'super()'
-        // (que chama este método) é executado antes da inicialização dos campos da subclasse no JavaScript.
+        // Inicialização defensiva do mapaSalas.
         if (!this.mapaSalas) {
             this.mapaSalas = new Map();
         }
@@ -44,10 +42,9 @@ export class JogoAventura extends Engine {
         let quarto = new QuartoPrincipal(this);
         let corredor = new CorredorSecreto(this);
         let santuario = new SantuarioOculto(this);
+        let estufa = new EstufaAbandonada(this); // Nova Sala
 
         // --- 2. Adição ao Mapa Global ---
-        // As salas são adicionadas ao mapaSalas para fácil acesso por nome,
-        // especialmente útil para lógica de portas que podem ser adicionadas dinamicamente.
         this.mapaSalas.set(jardim.nome, jardim);
         this.mapaSalas.set(hall.nome, hall);
         this.mapaSalas.set(salaLeitura.nome, salaLeitura);
@@ -56,11 +53,12 @@ export class JogoAventura extends Engine {
         this.mapaSalas.set(quarto.nome, quarto);
         this.mapaSalas.set(corredor.nome, corredor);
         this.mapaSalas.set(santuario.nome, santuario);
+        this.mapaSalas.set(estufa.nome, estufa); // Adiciona a nova sala
 
         // --- 3. Encadeamento das Salas (Definição de Portas) ---
-        // Cada sala tem sua propriedade 'portas' populada com referências a outras instâncias de Sala.
-
+        // Portas iniciais:
         jardim.portas.set(hall.nome, hall);
+        // Jardim -> Estufa: Porta Portão_Trancado_Antigo (Liberado dinamicamente na lógica do JardimSecreto.usa())
 
         hall.portas.set(jardim.nome, jardim);
         hall.portas.set(salaLeitura.nome, salaLeitura);
@@ -68,10 +66,7 @@ export class JogoAventura extends Engine {
 
         salaLeitura.portas.set(hall.nome, hall);
         salaLeitura.portas.set(quarto.nome, quarto);
-        
-        // NOTA: O 'Corredor_Secreto' é uma porta que deve ser adicionada dinamicamente
-        // dentro da lógica de 'SalaLeitura.usa()' após o jogador realizar uma ação específica
-        // (por exemplo, usar a lanterna nos livros).
+        // SalaLeitura -> Corredor: Porta dinâmica (Liberado dinamicamente na lógica do HallEntrada.usa())
 
         cozinha.portas.set(hall.nome, hall);
         cozinha.portas.set(despensa.nome, despensa);
@@ -79,19 +74,18 @@ export class JogoAventura extends Engine {
         despensa.portas.set(cozinha.nome, cozinha);
 
         quarto.portas.set(salaLeitura.nome, salaLeitura);
-        
-        // NOTA: A porta para o Corredor Secreto e, em última instância, para o Santuario Oculto,
-        // também deve ser revelada por alguma ação na SalaLeitura ou QuartoPrincipal.
+        // Quarto -> Corredor: Porta dinâmica (Liberado dinamicamente na lógica do SalaLeitura.usa())
 
         corredor.portas.set(quarto.nome, quarto);
         corredor.portas.set(santuario.nome, santuario);
+        corredor.portas.set(salaLeitura.nome, salaLeitura); // Adicionando acesso de volta pela Sala de Leitura (opcional, mas lógico)
 
         santuario.portas.set(corredor.nome, corredor);
+        
+        // Estufa -> Jardim:
+        estufa.portas.set(jardim.nome, jardim); // O acesso de volta já é liberado na lógica de JardimSecreto.usa()
 
         // --- 4. Definição da Sala Inicial ---
-        /**
-         * @property {Sala} salaCorrente Define o ponto de partida do jogador.
-         */
         this.salaCorrente = jardim;
     }
 }

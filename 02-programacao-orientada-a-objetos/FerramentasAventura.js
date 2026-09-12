@@ -128,3 +128,71 @@ export class AmuletoAncestral extends Ferramenta {
         super("amuleto_ancestral");
     }
 }
+
+// --- FERRAMENTAS FALTANTES (Conforme UML/OCR) ---
+
+/**
+ * @class ChaveMisteriosa
+ * @augments Ferramenta
+ * @description Uma chave de uso ilimitado.
+ */
+export class ChaveMisteriosa extends Ferramenta {
+    constructor() {
+        super("chave_misteriosa");
+    }
+}
+
+/**
+ * @class RegadorAbencoado
+ * @augments Ferramenta
+ * @description Regador, uso ilimitado.
+ */
+export class RegadorAbencoado extends Ferramenta {
+    constructor() {
+        super("regador_abencoado");
+    }
+}
+
+/**
+ * @class PocaoMagica
+ * @augments Ferramenta
+ * @description Poção Mágica, uso limitado a 1 vez.
+ */
+export class PocaoMagica extends Ferramenta {
+    constructor() {
+        super("pocao_magica", 1);
+    }
+}
+
+/**
+ * @class BaldeAgua
+ * @augments Ferramenta
+ * @description Balde com Água, uso limitado a 1 vez (para encher a pia).
+ */
+export class BaldeAgua extends Ferramenta {
+    constructor() {
+        super("balde_de_agua", 1);
+    }
+}
+
+/**
+ * @class RoloBarbante
+ * @augments Ferramenta
+ * @description Rolo de Barbante, uso ilimitado para reparos.
+ */
+export class RoloBarbante extends Ferramenta {
+    constructor() {
+        super("rolo_de_barbante");
+    }
+}
+
+/**
+ * @class ChaveAntiga
+ * @augments Ferramenta
+ * @description Chave Antiga, uso ilimitado (para o portão trancado).
+ */
+export class ChaveAntiga extends Ferramenta {
+    constructor() {
+        super("chave_antiga");
+    }
+}

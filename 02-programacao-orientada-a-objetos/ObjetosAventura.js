@@ -1,26 +1,18 @@
 import { validate } from "bycontract";
 import { Objeto, Ferramenta } from "./Basicas.js";
-// Importa as classes base.
-import { PanoUmedo, FosforosSecos, Bateria, ChaveEnferrujada, ChavePequena, LanternaCarregada, AmuletoAncestral } from "./FerramentasAventura.js"; 
-// Importa todas as subclasses de Ferramenta para verificar o tipo correto em 'usar'.
+import { PanoUmedo, FosforosSecos, Bateria, ChaveEnferrujada, ChavePequena, LanternaCarregada, AmuletoAncestral, ChaveMisteriosa, RegadorAbencoado, RoloBarbante, BaldeAgua, PocaoMagica, Olhos, ChaveAntiga } from "./FerramentasAventura.js"; 
 
 // ----------------------------------------------------------------------
 // OBJETOS INTERATIVOS
 // ----------------------------------------------------------------------
 
-/**
- * @class CandelabroEmpoeirado
- * @augments Objeto
- * @description Objeto de duas etapas de interação: precisa ser limpo e depois aceso.
- * Ação de Derrota: Usar fósforos errados (simulada por um nome de ferramenta específico).
- */
 export class CandelabroEmpoeirado extends Objeto {
-    #limpo; // Estado privado: true se já foi limpo, false caso contrário.
+    #limpo;
 
     constructor() {
         super("candelabro_empoeirado",
-              "sujo. Parece que precisa de limpeza e luz.", // Descrição inicial (Sujo e Apagado)
-              "limpo e aceso, iluminando o hall."); // Descrição final (Limpo E Aceso)
+              "sujo. Parece que precisa de limpeza e luz.",
+              "limpo e aceso, iluminando o hall.");
         this.#limpo = false;
     }
 
@@ -28,16 +20,6 @@ export class CandelabroEmpoeirado extends Objeto {
         return this.#limpo;
     }
 
-    /**
-     * @method usar
-     * @description Define as interações específicas para o candelabro.
-     * 1. PanoUmedo: Limpa (define #limpo = true).
-     * 2. FosforosSecos: Acende (define acaoOk = true), mas só se já estiver limpo.
-     * 3. 'fosforos_umdos': Causa o Fim do Jogo (Derrota).
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida.
-     * @throws {Error} Exceção de "Fim de Jogo" se a ação for fatal.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         
@@ -51,35 +33,26 @@ export class CandelabroEmpoeirado extends Objeto {
             this.acaoOk = true; 
             return true;
         } 
-        // Simulação de item perigoso (nome de ferramenta que não é uma classe)
         else if (ferramenta && ferramenta.nome === "fosforos_umdos") { 
             throw new Error("Fim de Jogo: Você foi asfixiado pela fumaça tóxica!");
         }
         return false;
     }
 
-    /**
-     * @property {string} descricao Sobrescreve a descrição para incluir o estado intermediário (#limpo).
-     */
     get descricao() {
         if (this.acaoOk) { 
-            return this._descricaoDepoisAcao; // Limpo e Aceso
+            return this._descricaoDepoisAcao;
         } else if (this.#limpo) { 
-            return "limpo, mas ainda escuro. Precisa ser aceso."; // Limpo, mas Apagado
+            return "limpo, mas ainda escuro. Precisa ser aceso.";
         } else { 
-            return this._descricaoAntesAcao; // Sujo e Apagado
+            return this._descricaoAntesAcao;
         }
     }
 }
 
-/**
- * @class LivrosAntigos
- * @augments Objeto
- * @description Revela uma chave e uma passagem secreta quando iluminado.
- */
 export class LivrosAntigos extends Objeto {
-    chaveRevelada; // Indica se a ChavePequena já foi encontrada.
-    passagemRevelada; // Indica se a Passagem Secreta já foi revelada (açãoOk = true).
+    chaveRevelada;
+    passagemRevelada;
 
     constructor() {
         super("livros_antigos",
@@ -89,12 +62,6 @@ export class LivrosAntigos extends Objeto {
         this.passagemRevelada = false;
     }
 
-    /**
-     * @method usar
-     * @description A LanternaCarregada é usada para encontrar a chave e a passagem.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         if (ferramenta instanceof LanternaCarregada) {
@@ -103,22 +70,15 @@ export class LivrosAntigos extends Objeto {
                 this.chaveRevelada = true;
                 this.passagemRevelada = true;
             }
-            this.acaoOk = true; // Marca que a ação principal de revelação foi feita.
-            // Nota: A lógica de adicionar a ferramenta 'chave_pequena' à sala e a porta 'corredor_secreto'
-            // na SalaLeitura deve ser feita na SalaLeitura.usa() onde este objeto está contido.
+            this.acaoOk = true;
             return true;
         }
         return false;
     }
 }
 
-/**
- * @class ArmarioTrancado
- * @augments Objeto
- * @description Objeto que guarda uma Bateria e é aberto por uma chave específica.
- */
 export class ArmarioTrancado extends Objeto {
-    bateriaRevelada; // Indica se a Bateria já foi encontrada.
+    bateriaRevelada;
 
     constructor() {
         super("armario_trancado",
@@ -127,12 +87,6 @@ export class ArmarioTrancado extends Objeto {
         this.bateriaRevelada = false;
     }
 
-    /**
-     * @method usar
-     * @description A ChaveEnferrujada abre o armário e revela a bateria.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         if (ferramenta instanceof ChaveEnferrujada) {
@@ -141,21 +95,14 @@ export class ArmarioTrancado extends Objeto {
                 this.bateriaRevelada = true;
             }
             this.acaoOk = true;
-            // Nota: A lógica de adicionar a ferramenta 'bateria' à sala deve ser feita na Sala onde este objeto está contido.
             return true;
         }
         return false;
     }
 }
 
-/**
- * @class FosforosUmdos
- * @augments Objeto
- * @description Representa um item que precisa ser melhorado (seco) para se tornar uma ferramenta útil.
- * No contexto do jogo, é um 'Objeto' que se transforma em 'FosforosSecos' (Ferramenta).
- */
 export class FosforosUmdos extends Objeto {
-    secos; // Indica se os fósforos já foram secos.
+    secos;
 
     constructor() {
         super("fosforos_umdos",
@@ -164,33 +111,20 @@ export class FosforosUmdos extends Objeto {
         this.secos = false;
     }
 
-    /**
-     * @method usar
-     * @description Usa o PanoUmedo para secar os fósforos.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         if (ferramenta instanceof PanoUmedo && !this.secos) {
             console.log("Você usa o pano úmido para secar os fósforos.");
             this.secos = true;
-            this.acaoOk = true; // Objeto agora é considerado 'modificado'.
-            // Nota: A lógica de remover 'fosforos_umdos' (Ferramenta) e adicionar 'FosforosSecos' (Ferramenta)
-            // deve ser tratada na Sala onde este objeto reside.
+            this.acaoOk = true;
             return true;
         }
         return false;
     }
 }
 
-/**
- * @class BauAntigo
- * @augments Objeto
- * @description Objeto que guarda o Amuleto Ancestral, chave para a vitória.
- */
 export class BauAntigo extends Objeto {
-    amuletoRevelado; // Indica se o Amuleto Ancestral já foi encontrado.
+    amuletoRevelado;
 
     constructor() {
         super("bau_antigo",
@@ -199,12 +133,6 @@ export class BauAntigo extends Objeto {
         this.amuletoRevelado = false;
     }
 
-    /**
-     * @method usar
-     * @description A ChavePequena abre o baú e revela o Amuleto.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         if (ferramenta instanceof ChavePequena) {
@@ -213,18 +141,12 @@ export class BauAntigo extends Objeto {
                 this.amuletoRevelado = true;
             }
             this.acaoOk = true;
-            // Nota: A lógica de adicionar a ferramenta 'amuleto_ancestral' à sala deve ser feita na Sala.
             return true;
         }
         return false;
     }
 }
 
-/**
- * @class BilheteRasgado
- * @augments Objeto
- * @description Objeto que fornece uma dica, cuja descrição muda ao ser "lido" (interagido).
- */
 export class BilheteRasgado extends Objeto {
     constructor() {
         super("bilhete_rasgado",
@@ -232,29 +154,19 @@ export class BilheteRasgado extends Objeto {
               "O bilhete completo diz: 'A luz revela o caminho, mas a escuridão guarda o segredo do baú. O tempo se esgota...'"); 
     }
 
-    /**
-     * @method usar
-     * @description Exemplo de um objeto que muda de estado apenas para fins de narrativa/informação.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true.
-     */
     usar(ferramenta) { 
         validate(ferramenta, Ferramenta);
-        // Aqui o jogo supõe um comando de leitura mapeado para uma ferramenta imaginária "olhos"
-        if (ferramenta.nome === "olhos") { 
+        // <<<<----- CORREÇÃO CHAVE AQUI ----->>>>
+        // Usa 'instanceof Olhos' em vez de 'ferramenta.nome === "olhos"'
+        if (ferramenta instanceof Olhos && !this.acaoOk) { 
             this.acaoOk = true; 
-            console.log(this.descricao);
+            console.log(`Você lê o bilhete: ${this.descricao}`);
             return true;
         }
         return false;
     }
 }
 
-/**
- * @class Pedestal
- * @augments Objeto
- * @description Objeto final do jogo. Usar o Amuleto Ancestral nele deve levar à vitória.
- */
 export class Pedestal extends Objeto {
     constructor() {
         super("pedestal",
@@ -262,30 +174,18 @@ export class Pedestal extends Objeto {
               "O Amuleto Ancestral está no pedestal, ativado! A mansão parece respirar novamente.");
     }
 
-    /**
-     * @method usar
-     * @description O Amuleto Ancestral é colocado no pedestal. Esta ação deve acionar o fim de jogo (vitória) na Engine.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         if (ferramenta instanceof AmuletoAncestral) { 
             this.acaoOk = true;
-            // Nota: A Engine precisa ser notificada aqui (ou na Sala.usa()) para terminar o jogo com sucesso.
             return true;
         }
         return false;
     }
 }
 
-/**
- * @class LanternaDescarregada
- * @augments Objeto
- * @description Um objeto que se transforma na ferramenta Lanterna Carregada.
- */
 export class LanternaDescarregada extends Objeto {
-    carregada; // Indica se a lanterna já foi carregada.
+    carregada;
 
     constructor() {
         super("lanterna_descarregada",
@@ -294,19 +194,198 @@ export class LanternaDescarregada extends Objeto {
         this.carregada = false;
     }
 
-    /**
-     * @method usar
-     * @description A Bateria carrega a lanterna.
-     * @param {Ferramenta} ferramenta A ferramenta usada.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida.
-     */
     usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         if (ferramenta instanceof Bateria && !this.carregada) {
             console.log("Você insere a bateria na lanterna. Ela agora está carregada!");
             this.carregada = true;
             this.acaoOk = true;
-            // Nota: A lógica de adicionar a ferramenta LanternaCarregada na sala e remover a Bateria usada deve ser tratada na Sala.
+            return true;
+        }
+        return false;
+    }
+}
+
+export class CaixaVelhaTrancada extends Objeto {
+    #aberta;
+
+    constructor() {
+        super("caixa_velha_trancada",
+              "Uma caixa velha de madeira, trancada.",
+              "A caixa velha está aberta. Dentro, há um diário antigo e um balde com água.");
+        this.#aberta = false;
+    }
+
+    get aberta() {
+        return this.#aberta;
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta instanceof ChaveMisteriosa && !this.#aberta) {
+            console.log("Você usa a chave e a caixa se abre, revelando um diário antigo e um balde com água!");
+            this.#aberta = true;
+            this.acaoOk = true;
+            return true;
+        }
+        return false;
+    }
+}
+
+export class DiarioAntigo extends Objeto {
+    constructor() {
+        super("diario_antigo",
+              "Um diário velho e empoeirado. Parece ter anotações importantes.",
+              "Você lê o diário. Ele fala sobre um regador abençoado para a planta mística e uma chave antiga...");
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        // <<<<----- CORREÇÃO CHAVE AQUI ----->>>>
+        // Usa 'instanceof Olhos' em vez de 'ferramenta.nome === "olhos"'
+        if (ferramenta instanceof Olhos && !this.acaoOk) { 
+            this.acaoOk = true;
+            console.log(`Você lê as páginas amareladas do diário: ${this.descricao}`);
+            return true;
+        }
+        return false;
+    }
+}
+
+export class PlantaMisteriosaRessequida extends Objeto {
+    #regada;
+
+    constructor() {
+        super("planta_misteriosa_ressequida",
+              "Uma planta murcha e misteriosa. Parece precisar de água.",
+              "A planta floresceu, revelando um portão oculto em suas folhagens!");
+        this.#regada = false;
+    }
+
+    get regada() {
+        return this.#regada;
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta instanceof RegadorAbencoado && !this.#regada) {
+            console.log("Você rega a planta. Ela começa a crescer rapidamente e revela algo!");
+            this.#regada = true;
+            this.acaoOk = true;
+            return true;
+        }
+        return false;
+    }
+}
+
+export class PortaoTrancadoAntigo extends Objeto {
+    #aberto;
+
+    constructor() {
+        super("portao_trancado_antigo",
+              "Um portão de ferro coberto por hera, trancado com um cadeado antigo.",
+              "O portão se abriu, revelando um caminho úmido para a Estufa Abandonada.");
+        this.#aberto = false;
+    }
+
+    get aberto() {
+        return this.#aberto;
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta instanceof ChaveAntiga && !this.#aberto) { 
+            console.log("Você usa a chave antiga e o portão se destranca e abre!");
+            this.#aberto = true;
+            this.acaoOk = true;
+            return true;
+        }
+        return false;
+    }
+}
+
+export class IngredientesEstranhos extends Objeto {
+    constructor() {
+        super("ingredientes_estranhos",
+              "Uma mistura de ervas e pós de aparência suspeita. Parecem ser para alguma poção.",
+              "Os ingredientes foram adicionados à destilaria.");
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta.nome === "destilaria_consertada_com_agua" && !this.acaoOk) { 
+            console.log("Você adiciona os ingredientes à destilaria.");
+            this.acaoOk = true;
+            return true;
+        }
+        return false;
+    }
+}
+
+export class PiaSeca extends Objeto {
+    #comAgua;
+
+    constructor() {
+        super("pia_seca",
+              "Uma pia velha e suja, sem água. Parece que um balde de água a encheria.",
+              "A pia agora está cheia de água limpa.");
+        this.#comAgua = false;
+    }
+
+    get comAgua() {
+        return this.#comAgua;
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta instanceof BaldeAgua && !this.#comAgua) {
+            console.log("Você despeja a água na pia. Ela agora está cheia!");
+            this.#comAgua = true;
+            this.acaoOk = true;
+            return true;
+        }
+        return false;
+    }
+}
+
+export class DestilariaQuebrada extends Objeto {
+    #consertada;
+
+    constructor() {
+        super("destilaria_quebrada",
+              "Uma destilaria antiga e quebrada. O barbante poderia consertá-la.",
+              "A destilaria foi consertada e agora pode ser usada.");
+        this.#consertada = false;
+    }
+
+    get consertada() {
+        return this.#consertada;
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta instanceof RoloBarbante && !this.#consertada) {
+            console.log("Você usa o rolo de barbante para consertar a destilaria.");
+            this.#consertada = true;
+            this.acaoOk = true;
+            return true;
+        }
+        return false;
+    }
+}
+
+export class RitualMisterioso extends Objeto {
+    constructor() {
+        super("ritual_misterioso",
+              "Um círculo de pedras e símbolos antigos, esperando por uma oferenda.",
+              "O ritual foi completado! O segredo final da mansão foi revelado.");
+    }
+
+    usar(ferramenta) {
+        validate(ferramenta, Ferramenta);
+        if (ferramenta instanceof PocaoMagica && !this.acaoOk) {
+            console.log("Você derrama a poção no centro do ritual. As pedras brilham intensamente!");
+            this.acaoOk = true;
             return true;
         }
         return false;

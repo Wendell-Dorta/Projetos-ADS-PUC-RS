@@ -2,26 +2,24 @@ import { validate } from "bycontract";
 import promptsync from 'prompt-sync';
 const prompt = promptsync({ sigint: true });
 
-// Importa a função 'validate' para validação de contratos (tipos de dados)
-// Importa 'prompt-sync' para permitir a entrada de dados síncrona do usuário no console
-// 'prompt' é a função configurada para obter entrada do usuário.
+// ----------------------------------------------------------------------
+// CLASSES BASE DO FRAMEWORK DO JOGO DE AVENTURA
+// ----------------------------------------------------------------------
 
-// ---------------------------------------------
 /**
  * @class Ferramenta
- * @description Representa um item que pode ser usado em objetos do jogo,
- * podendo ter usos limitados ou ilimitados.
- *
- * Exemplo: Uma 'chave' (uso ilimitado), ou um 'palito de fósforo' (uso limitado).
+ * @description Representa um item que pode ser coletado pelo jogador e usado em objetos do jogo.
+ * Pode ter um número limitado ou ilimitado de usos.
  */
 export class Ferramenta {
-    #nome; // Nome da ferramenta (privado)
+    #nome; // Nome único da ferramenta (privado)
     #usos; // Número de usos restantes. -1 significa usos ilimitados (privado)
 
     /**
      * @constructor
-     * @param {string} nome O nome da ferramenta.
-     * @param {number} [usos=-1] O número de vezes que a ferramenta pode ser usada. -1 para ilimitado.
+     * @param {string} nome O nome da ferramenta (ex: "martelo", "chave_pequena").
+     * @param {number} [usos=-1] O número de vezes que a ferramenta pode ser usada.
+     *                          -1 indica usos ilimitados.
      */
     constructor(nome, usos = -1) {
         validate(nome, "String");
@@ -31,21 +29,35 @@ export class Ferramenta {
     }
 
     /**
-     * @property {string} nome Retorna o nome da ferramenta. (Getter)
+     * @property {string} nome Retorna o nome da ferramenta. (Usado como nome de comando)
      */
     get nome() {
         return this.#nome;
     }
 
     /**
-     * @property {number} usos Retorna o número de usos restantes da ferramenta. (Getter)
+     * @property {string} infoUsos
+     * @description Retorna uma string com a informação de usos restantes/ilimitados/esgotada.
+     */
+    get infoUsos() {
+        if (this.#usos > 0) {
+            return `(${this.#usos} usos restantes)`;
+        } else if (this.#usos === -1) {
+            return `(usos ilimitados)`;
+        }
+        return `(esgotada)`; // 0 usos
+    }
+
+    /**
+     * @property {number} usos Retorna o número de usos restantes da ferramenta.
      */
     get usos() {
         return this.#usos;
     }
 
     /**
-     * @property {number} usos Define o número de usos restantes da ferramenta. (Setter)
+     * @property {number} usos Define o número de usos restantes da ferramenta.
+     * @param {number} valor O novo valor para os usos.
      */
     set usos(valor) {
         validate(valor, "Number");
@@ -54,55 +66,70 @@ export class Ferramenta {
 
     /**
      * @method usar
-     * @description Tenta usar a ferramenta. Decrementa o número de usos se for limitado (> 0).
-     * @returns {boolean} Retorna true se a ferramenta pôde ser usada (uso ilimitado ou usos > 0), false caso contrário (usos esgotados).
+     * @description Tenta usar a ferramenta. Se a ferramenta tem usos limitados (>0),
+     *              decrementa o contador de usos.
+     * @returns {boolean} Retorna `true` se a ferramenta pôde ser usada (usos ilimitados ou usos > 0 antes do uso),
+     *                    `false` caso contrário (usos esgotados).
      */
     usar() {
         if (this.#usos > 0) {
             this.#usos--;
             return true;
-        } else if (this.#usos === -1) { // Uso ilimitado
+        } else if (this.#usos === -1) { // Usos ilimitados
             return true;
         }
-        return false;
+        return false; // Sem usos restantes
     }
 }
 
 /**
  * @class Mochila
- * @description Representa o inventário do jogador, onde as ferramentas são armazenadas.
+ * @description Representa o inventário do jogador, onde as ferramentas coletadas são armazenadas.
+ *              Possui uma capacidade máxima predefinida de ferramentas.
  */
 export class Mochila {
-    #ferramentas; // Array de objetos Ferramenta guardados na mochila (privado)
+    #ferramentas;      // Array de objetos Ferramenta guardados na mochila (privado)
+    #capacidadeMaxima; // Capacidade máxima de ferramentas que a mochila pode conter (privado)
 
     /**
      * @constructor
-     * @description Inicializa a mochila com uma lista de ferramentas vazia.
+     * @param {number} [capacidadeMaxima=3] A quantidade máxima de ferramentas que a mochila pode carregar.
      */
-    constructor() {
+    constructor(capacidadeMaxima = 3) {
+        validate(capacidadeMaxima, "Number");
         this.#ferramentas = [];
+        this.#capacidadeMaxima = capacidadeMaxima;
     }
 
     /**
      * @method guarda
-     * @description Adiciona uma Ferramenta à mochila.
+     * @description Adiciona uma Ferramenta à mochila, se houver espaço.
      * @param {Ferramenta} ferramenta O objeto Ferramenta a ser guardado.
+     * @returns {boolean} Retorna `true` se a ferramenta foi guardada com sucesso, `false` se a mochila está cheia.
      */
     guarda(ferramenta) {
         validate(ferramenta, Ferramenta);
+        if (this.#ferramentas.length >= this.#capacidadeMaxima) {
+            console.log("Sua mochila está cheia! Não é possível guardar mais ferramentas.");
+            return false;
+        }
         this.#ferramentas.push(ferramenta);
+        return true;
     }
 
     /**
      * @method pega
      * @description Busca uma ferramenta pelo nome na mochila.
+     *              Importante: A ferramenta ainda está na mochila, mas o método retorna null
+     *              se ela estiver esgotada para indicar que não pode ser usada no momento.
      * @param {string} nomeFerramenta O nome da ferramenta a ser buscada.
-     * @returns {Ferramenta | null} O objeto Ferramenta se encontrado, ou null se não.
+     * @returns {Ferramenta | null} O objeto Ferramenta se encontrado e com usos restantes,
+     *                               ou `null` se não encontrada ou com usos esgotados.
      */
     pega(nomeFerramenta) {
         validate(arguments, ["String"]);
         let ferramenta = this.#ferramentas.find(f => f.nome === nomeFerramenta);
-        // Garante que uma ferramenta com 0 usos não seja "pega" (embora ainda esteja no array)
+        // Retorna null se esgotada para indicar que não está disponível para uso
         if (ferramenta && ferramenta.usos === 0) {
             return null;
         }
@@ -111,47 +138,61 @@ export class Mochila {
 
     /**
      * @method tem
-     * @description Verifica se uma ferramenta com o nome especificado existe na mochila.
+     * @description Verifica se uma ferramenta com o nome especificado existe na mochila e tem usos restantes.
      * @param {string} nomeFerramenta O nome da ferramenta.
-     * @returns {boolean} Retorna true se a ferramenta estiver na mochila, false caso contrário.
+     * @returns {boolean} Retorna `true` se a ferramenta estiver na mochila e pode ser usada, `false` caso contrário.
      */
     tem(nomeFerramenta) {
         validate(arguments, ["String"]);
-        return this.#ferramentas.some(f => f.nome === nomeFerramenta);
+        return this.#ferramentas.some(f => f.nome === nomeFerramenta && f.usos !== 0);
     }
 
     /**
      * @method remove
      * @description Remove uma ferramenta da mochila pelo nome.
-     * **Nota:** Este método foi sugerido no comentário da classe Sala, mas não está no código original,
-     * então foi adicionado aqui para completar a lógica.
+     *              Usado com o comando 'descartar'.
      * @param {string} nomeFerramenta O nome da ferramenta a ser removida.
+     * @returns {boolean} Retorna `true` se a ferramenta foi encontrada e removida, `false` caso contrário.
      */
     remove(nomeFerramenta) {
+        const initialLength = this.#ferramentas.length;
         this.#ferramentas = this.#ferramentas.filter(f => f.nome !== nomeFerramenta);
+        return this.#ferramentas.length < initialLength;
     }
 
     /**
      * @method inventario
-     * @description Lista os nomes de todas as ferramentas disponíveis na mochila, separadas por vírgula.
-     * @returns {string} Uma string com os nomes das ferramentas.
+     * @description Gera uma string formatada que lista todas as ferramentas na mochila,
+     *              incluindo seus usos restantes (ou ilimitados/esgotada) e a capacidade atual/máxima da mochila.
+     *              Itens esgotados SÃO exibidos, com sua condição.
+     * @returns {string} Uma string amigável com o conteúdo da mochila.
      */
     inventario() {
-        return this.#ferramentas.map(obj => obj.nome).join(", ");
+        let inventarioStr = `Sua mochila (${this.#ferramentas.length}/${this.#capacidadeMaxima}):\n`;
+        
+        if (this.#ferramentas.length === 0) {
+            inventarioStr += "Está vazia.";
+        } else {
+            // Exibe TODOS os itens, incluindo os esgotados, com a informação de uso.
+            const itensFormatados = this.#ferramentas.map(ferramenta => 
+                `* ${ferramenta.nome} ${ferramenta.infoUsos}` // Usa nome "cru" + info de uso
+            );
+            inventarioStr += itensFormatados.join("\n");
+        }
+        return inventarioStr;
     }
 }
 
-// ---------------------------------------------
+// ----------------------------------------------------------------------
 /**
  * @class Objeto
  * @description Representa um objeto interativo dentro de uma Sala.
- * Possui descrições diferentes dependendo se a ação já foi realizada ou não.
  */
 export class Objeto {
-    #nome; // Nome do objeto (privado)
-    _descricaoAntesAcao; // Descrição antes de uma ação ser bem-sucedida (protegida por convenção)
-    _descricaoDepoisAcao; // Descrição depois de uma ação ser bem-sucedida (protegida por convenção)
-    #acaoOk; // Estado que indica se a ação principal do objeto foi realizada (privado)
+    #nome;
+    _descricaoAntesAcao;  // Protegida por convenção
+    _descricaoDepoisAcao; // Protegida por convenção
+    #acaoOk;
 
     /**
      * @constructor
@@ -162,8 +203,8 @@ export class Objeto {
     constructor(nome, descricaoAntesAcao, descricaoDepoisAcao) {
         validate(arguments, ["String", "String", "String"]);
         this.#nome = nome;
-        this._descricaoAntesAcao = descricaoAntesAcao; // Atribuição para a propriedade protegida
-        this._descricaoDepoisAcao = descricaoDepoisAcao; // Atribuição para a propriedade protegida
+        this._descricaoAntesAcao = descricaoAntesAcao;
+        this._descricaoDepoisAcao = descricaoDepoisAcao;
         this.#acaoOk = false;
     }
 
@@ -175,14 +216,15 @@ export class Objeto {
     }
 
     /**
-     * @property {boolean} acaoOk Retorna o estado de ação realizada (true/false).
+     * @property {boolean} acaoOk Retorna o estado que indica se a ação principal do objeto foi realizada.
      */
     get acaoOk() {
         return this.#acaoOk;
     }
 
     /**
-     * @property {boolean} acaoOk Define o estado de ação realizada.
+     * @property {boolean} acaoOk Define o estado de ação realizada para o objeto.
+     * @param {boolean} acaoOk O novo estado.
      */
     set acaoOk(acaoOk) {
         validate(acaoOk, "Boolean");
@@ -190,8 +232,8 @@ export class Objeto {
     }
 
     /**
-     * @property {string} descricao Retorna a descrição do objeto.
-     * Escolhe entre `_descricaoAntesAcao` e `_descricaoDepoisAcao` baseado no estado `acaoOk`.
+     * @property {string} descricao
+     * @description Retorna a descrição atual do objeto.
      */
     get descricao() {
         if (!this.acaoOk) {
@@ -203,28 +245,28 @@ export class Objeto {
 
     /**
      * @method usar
-     * @description Método para tentar usar uma ferramenta no objeto. **Deve ser sobrescrito**
-     * nas subclasses para implementar a lógica específica de interação.
+     * @description Método para tentar usar uma ferramenta específica neste objeto.
+     *              **Deve ser sobrescrito** nas subclasses.
      * @param {Ferramenta} ferramenta O objeto Ferramenta sendo usado.
-     * @returns {boolean} Retorna false por padrão (ação sem sucesso).
+     * @returns {boolean} Retorna `false` por padrão.
      */
-    usar(ferramenta) { // Método para ser sobrescrito
+    usar(ferramenta) {
         validate(ferramenta, Ferramenta);
         return false;
     }
 }
-// ---------------------------------------------
+
+// ----------------------------------------------------------------------
 /**
  * @class Sala
- * @description Representa um local no jogo (um cômodo, área, etc.).
- * Contém objetos, ferramentas e portas que levam a outras salas.
+ * @description Representa um local físico no jogo.
  */
 export class Sala {
-    #nome; // Nome da sala (privado)
-    #objetos; // Map de objetos interativos na sala (nome -> Objeto) (privado)
-    #ferramentas; // Map de ferramentas disponíveis para pegar na sala (nome -> Ferramenta) (privado)
-    #portas; // Map de portas para outras salas (nome da porta/direção -> Sala) (privado)
-    #engine; // Referência à Engine do jogo (privado)
+    #nome;
+    #objetos;
+    #ferramentas;
+    #portas;
+    #engine;
 
     /**
      * @constructor
@@ -232,16 +274,15 @@ export class Sala {
      * @param {Engine} engine A instância da Engine do jogo.
      */
     constructor(nome, engine) {
-        // A validação para 'Engine' pressupõe que a classe Engine será definida antes ou no mesmo arquivo
         validate(arguments, ["String", Engine]); 
         this.#nome = nome;
         this.#objetos = new Map();
         this.#ferramentas = new Map();
         this.#portas = new Map();
-        this.#engine = engine;
+        this.#engine = engine; 
     }
 
-    // Getters
+    // Getters para acesso controlado às propriedades privadas
     get nome() { return this.#nome; }
     get objetos() { return this.#objetos; }
     get ferramentas() { return this.#ferramentas; }
@@ -250,157 +291,183 @@ export class Sala {
 
     /**
      * @method objetosDisponiveis
-     * @description Retorna uma lista formatada dos nomes e descrições dos objetos na sala.
-     * @returns {string[]} Um array de strings no formato "nome:descricao".
+     * @description Retorna uma lista formatada dos nomes "crus" e descrições dos objetos na sala.
+     * @returns {string[]} Um array de strings, formatado para exibição.
      */
     objetosDisponiveis() {
         let arrObjs = [...this.#objetos.values()];
-        return arrObjs.map(obj => obj.nome + ":" + obj.descricao);
+        return arrObjs.map(obj => `* ${obj.nome}: ${obj.descricao}`);
     }
 
     /**
-     * @method ferramentasDisponiveis
-     * @description Retorna uma lista dos nomes das ferramentas que podem ser pegas na sala.
-     * @returns {string[]} Um array de strings contendo os nomes das ferramentas.
+     * @method ferramentasParaExibicao
+     * @description Retorna uma lista formatada das ferramentas disponíveis para serem pegas na sala,
+     *              incluindo seus usos. Itens esgotados NÃO SÃO exibidos aqui.
+     * @returns {string[]} Um array de strings formatado, pronto para exibição.
      */
-    ferramentasDisponiveis() {
+    ferramentasParaExibicao() {
         let arrFer = [...this.#ferramentas.values()];
-        return arrFer.map(f => f.nome);
+        // Filtra ferramentas que já não têm usos e mapeia para o formato de inventário (nome + info usos)
+        return arrFer
+            .filter(f => f.usos !== 0) 
+            .map(f => `* ${f.nome} ${f.infoUsos}`);
     }
 
     /**
      * @method portasDisponiveis
-     * @description Retorna uma lista dos nomes das salas que são acessíveis pelas portas desta sala.
-     * @returns {string[]} Um array de strings contendo os nomes das salas de destino.
+     * @description Retorna uma lista dos nomes "crus" das portas disponíveis para navegação.
+     * @returns {string[]} Um array de strings com os nomes das portas.
      */
     portasDisponiveis() {
-        let arrPortas = [...this.#portas.values()];
-        return arrPortas.map(sala => sala.nome);
+        let arrPortas = [...this.#portas.keys()];
+        return arrPortas.map(chave => chave.toLowerCase());
     }
 
     /**
      * @method pega
-     * @description Tenta pegar uma ferramenta da sala e a guarda na mochila do jogador.
-     * Remove a ferramenta da sala se for bem-sucedido.
-     * @param {string} nomeFerramenta O nome da ferramenta a ser pega.
-     * @returns {boolean} Retorna true se a ferramenta foi pega, false caso contrário (não encontrada ou usos esgotados).
+     * @description Tenta pegar uma ferramenta da sala e guardá-la na mochila do jogador.
+     *              Se a ferramenta existir, tiver usos e a mochila não estiver cheia, a ferramenta é transferida.
+     * @param {string} nomeFerramenta O nome "cru" da ferramenta a ser pega.
+     * @returns {boolean} Retorna `true` se a ferramenta foi pega com sucesso, `false` caso contrário.
      */
     pega(nomeFerramenta) {
         validate(nomeFerramenta, "String");
         let ferramenta = this.#ferramentas.get(nomeFerramenta);
+        
         if (ferramenta != null) {
-            // Se a ferramenta tem usos limitados e já foi usada completamente, não pode ser pega
             if (ferramenta.usos === 0) {
+                console.log(`A ferramenta '${nomeFerramenta}' está esgotada e não pode ser pega.`);
                 return false;
             }
-            this.#engine.mochila.guarda(ferramenta);
-            this.#ferramentas.delete(nomeFerramenta);
-            return true;
+            
+            if (this.#engine.mochila.guarda(ferramenta)) {
+                this.#ferramentas.delete(nomeFerramenta); // Remove a ferramenta da sala se guardada com sucesso
+                return true; // Sucesso ao pegar e guardar
+            } else {
+                // Mochila estava cheia, a mensagem de "mochila cheia" já foi exibida por Mochila.guarda()
+                return false; // Falha ao guardar na mochila
+            }
         } else {
-            return false;
+            console.log(`A ferramenta '${nomeFerramenta}' não está visível aqui.`);
+            return false; // Ferramenta não encontrada na sala
         }
     }
 
     /**
      * @method sai
-     * @description Tenta sair por uma "porta" (na verdade o nome da sala de destino).
-     * @param {string} porta O nome da sala de destino (chave no map de portas).
-     * @returns {Sala | null} Retorna o objeto Sala de destino, ou null se a porta não existir.
+     * @description Tenta mudar o jogador para outra sala.
+     * @param {string} porta O nome "cru" da sala de destino conforme digitado pelo usuário.
+     * @returns {Sala | null} Retorna o objeto `Sala` de destino se encontrada, ou `null` se a porta não existir.
      */
     sai(porta) {
         validate(porta, "String");
+        // Compara a entrada do usuário (já em minúsculas) com as chaves do mapa (que foram guardadas em minúsculas)
         return this.#portas.get(porta);
     }
 
     /**
      * @method textoDescricao
-     * @description Gera um texto completo descrevendo a sala atual (nome, objetos, ferramentas, portas).
-     * @returns {string} O texto de descrição da sala.
+     * @description Gera um texto completo e formatado descrevendo a sala atual.
+     * @returns {string} O texto de descrição formatado da sala.
      */
     textoDescricao() {
-        let descricao = "Você está no **" + this.nome + "**\n";
-        if (this.objetos.size == 0) {
-            descricao += "Não há objetos na sala\n";
+        let descricao = "\n================================================\n";
+        descricao += ` LOCAL: **${this.nome.replace(/_/g, " ")}**\n`; // Nome da sala formatado para exibição
+        descricao += "================================================\n\n";
+        
+        // Seção de Objetos Interativos
+        let objetosDisponiveis = this.objetosDisponiveis();
+        if (objetosDisponiveis.length === 0) {
+            descricao += "OBJETOS INTERATIVOS: Não há objetos visíveis aqui.\n\n";
         } else {
-            descricao += "Objetos: " + this.objetosDisponiveis().join(", ") + "\n";
+            descricao += "OBJETOS INTERATIVOS:\n" + objetosDisponiveis.join("\n") + "\n\n";
         }
-        if (this.ferramentas.size == 0) {
-            descricao += "Não há ferramentas na sala\n";
+
+        // Seção de Ferramentas para Pegar
+        let ferramentasParaPegar = this.ferramentasParaExibicao();
+        if (ferramentasParaPegar.length === 0) {
+            descricao += "FERRAMENTAS PARA PEGAR: Não há ferramentas visíveis aqui.\n\n";
         } else {
-            descricao += "Ferramentas: " + this.ferramentasDisponiveis() + "\n";
+            descricao += "FERRAMENTAS PARA PEGAR:\n" + ferramentasParaPegar.join("\n") + "\n\n";
         }
-        descricao += "Portas: " + this.portasDisponiveis() + "\n";
+
+        // Seção de Portas Disponíveis
+        let portasDisponiveis = this.portasDisponiveis();
+        if (portasDisponiveis.length === 0) {
+            descricao += "PORTAS DISPONÍVEIS: Nenhuma saída no momento.\n";
+        } else {
+            descricao += "PORTAS DISPONÍVEIS (Comando: sai [nome_da_porta]):\n" + 
+                         portasDisponiveis.map(p => `* ${p}`).join("\n") + "\n"; // Exibe nomes "crus" para o comando
+        }
+        
         return descricao;
     }
 
     /**
      * @method usa
      * @description Tenta usar uma ferramenta da mochila em um objeto da sala.
-     * Lida com a lógica de uso limitado da ferramenta e propagação de exceções de jogo.
-     * @param {string} ferramentaNome O nome da ferramenta na mochila.
-     * @param {string} objetoNome O nome do objeto na sala.
-     * @returns {boolean} Retorna true se a ação foi bem-sucedida, false caso contrário.
+     *              A ferramenta é consumida (se limitada) antes de ser passada ao objeto.
+     * @param {string} ferramentaNome O nome "cru" da ferramenta na mochila.
+     * @param {string} objetoNome O nome "cru" do objeto na sala.
+     * @returns {boolean} Retorna `true` se a ação foi bem-sucedida, `false` caso contrário.
+     * @throws {Error} Propaga exceções de "Fim de Jogo".
      */
     usa(ferramentaNome, objetoNome) {
         validate(arguments, ["String", "String"]);
 
-        let ferramenta = this.#engine.mochila.pega(ferramentaNome);
-        let objeto = this.#objetos.get(objetoNome);
+        // Pega as instâncias usando os nomes "crus"
+        const ferramentaNaMochila = this.#engine.mochila.pega(ferramentaNome);
+        const objetoNaSala = this.#objetos.get(objetoNome);
 
-        if (!ferramenta || !objeto) {
-            console.log(`Não é possível usar '${ferramentaNome}' sobre '${objetoNome}'. Ferramenta ou objeto não disponível ou não está na mochila.`);
+        if (!ferramentaNaMochila || !objetoNaSala) {
+            // A mensagem de erro agora usa os nomes crus para ser consistente com o input esperado.
+            console.log(`Erro: Verifique se a ferramenta '${ferramentaNome}' está na sua mochila e o objeto '${objetoNome}' está na sala.`);
             return false;
         }
 
-        // Tenta usar a ferramenta (decrementa usos se for limitado e > 0)
-        if (ferramenta.usos !== -1 && !ferramenta.usar()) {
-            console.log(`A ferramenta '${ferramentaNome}' não pode mais ser usada.`);
-            this.#engine.mochila.remove(ferramentaNome); // Remove a ferramenta esgotada da mochila
+        // Tenta usar a ferramenta (decrementa usos se for limitado e > 0).
+        // Se usar() retornar false, significa que os usos acabaram.
+        if (ferramentaNaMochila.usos !== -1 && !ferramentaNaMochila.usar()) {
+            console.log(`A ferramenta '${ferramentaNaMochila.nome}' não pode mais ser usada.`);
+            // A remoção daqui foi ajustada: a ferramenta com 0 usos NÃO é removida automaticamente,
+            // mas um comando 'descartar' pode ser usado.
             return false;
         }
-
+        
         let usou = false;
         try {
-            // Tenta usar a ferramenta no objeto (lógica específica do Objeto)
-            usou = objeto.usar(ferramenta);
+            usou = objetoNaSala.usar(ferramentaNaMochila);
         } catch (error) {
-            // Propaga exceções de derrota/fim de jogo
-            throw error;
+            throw error; 
         }
 
         if (usou) {
-            if (ferramenta.usos !== -1 && ferramenta.usos === 0) {
-                // Se a ferramenta foi consumida após o uso bem-sucedido, remove-a da mochila.
-                this.#engine.mochila.remove(ferramentaNome); 
-                console.log(`A ferramenta '${ferramenta.nome}' foi totalmente consumida.`);
+            // Se a ferramenta foi consumida após um uso bem-sucedido, mas NÃO é removida automaticamente aqui.
+            if (ferramentaNaMochila.usos !== -1 && ferramentaNaMochila.usos === 0) {
+                console.log(`A ferramenta '${ferramentaNaMochila.nome}' foi totalmente consumida. Considere descartá-la para liberar espaço.`);
             }
         }
         return usou;
     }
 }
-// ---------------------------------------------
+
+// ----------------------------------------------------------------------
 /**
  * @class Engine
- * @description A classe principal de controle do jogo (Game Engine).
- * Gerencia o estado do jogo (mochila, sala atual) e o loop principal.
+ * @description A classe principal de controle do jogo.
  */
 export class Engine {
-    #mochila; // A Mochila do jogador (privado)
-    #salaCorrente; // A Sala onde o jogador está atualmente (privado)
-    #fim; // Flag que indica se o jogo deve terminar (privado)
+    #mochila;
+    #salaCorrente;
+    #fim;
 
-    /**
-     * @constructor
-     * @description Inicializa a Engine, cria a Mochila, define a sala inicial como null e inicia o cenário.
-     */
     constructor() {
-        this.#mochila = new Mochila();
+        this.#mochila = new Mochila(); 
         this.#salaCorrente = null;
         this.#fim = false;
-        this.criaCenario(); // Método abstrato que deve ser implementado pela subclasse
+        this.criaCenario();
     }
 
-    // Getters e Setters
     get mochila() { return this.#mochila; }
     get salaCorrente() { return this.#salaCorrente; }
     get fim() { return this.#fim; }
@@ -410,91 +477,109 @@ export class Engine {
         this.#salaCorrente = sala;
     }
 
-    /**
-     * @method indicaFimDeJogo
-     * @description Define a flag de fim de jogo como true.
-     */
     indicaFimDeJogo() {
         this.#fim = true;
     }
 
-    /**
-     * @method criaCenario
-     * @description Método abstrato onde a lógica de criação das salas, objetos e ferramentas do jogo deve ser implementada.
-     * Por convenção, esta classe deve ser herdada e o método sobrescrito.
-     */
-    criaCenario() { 
-        // Lógica de criação do cenário (salas, objetos, etc.) deve ser aqui
-    }
+    criaCenario() { }
 
     /**
      * @method joga
-     * @description O loop principal do jogo. Repete até que o jogo termine (`#fim` seja true).
-     * Lida com a entrada do usuário e o processamento dos comandos.
+     * @description Implementa o loop principal do jogo, incluindo o novo comando 'descartar'.
      */
     joga() {
         let novaSala = null;
         let acao = "";
-        let tokens = null;
-        while (!this.#fim) {
-            console.log("-------------------------");
-            // Exibe a descrição da sala atual
+        let tokens = null; 
+
+        while (!this.#fim) { 
             console.log(this.salaCorrente.textoDescricao()); 
-            // Pede um comando ao usuário
-            acao = prompt("O que voce deseja fazer? "); 
-            tokens = acao.split(" ");
             
-            // Lógica de processamento dos comandos
-            switch (tokens[0].toLowerCase()) {
+            // Novo prompt para incluir o comando 'descartar'
+            acao = prompt("Comando (pega [ferramenta] | usa [ferramenta] [objeto] | sai [porta] | inventario | descartar [ferramenta] | fim): "); 
+            
+            tokens = acao.toLowerCase().split(" ");
+            
+            switch (tokens[0]) {
                 case "fim":
                     this.#fim = true;
                     break;
+                
                 case "pega":
-                    if (this.salaCorrente.pega(tokens[1])) {
-                        console.log(`Ok! '${tokens[1]}' guardado!`);
-                    } else {
-                        console.log(`Ferramenta '${tokens[1]}' não encontrada ou não pode ser pega.`);
+                    if (tokens.length < 2) { 
+                        console.log("Comando incompleto. Use: pega [nome_da_ferramenta]"); 
+                        break; 
+                    }
+                    if (this.salaCorrente.pega(tokens[1])) { 
+                        console.log(`Ok! A ferramenta '${tokens[1]}' foi guardada na mochila.`);
                     }
                     break;
+                
                 case "inventario":
-                    console.log("Ferramentas disponiveis na mochila: " + this.#mochila.inventario());
+                    console.log("\n-- INVENTÁRIO --");
+                    console.log(this.#mochila.inventario());
+                    console.log("----------------\n");
                     break;
+                
                 case "usa":
+                    if (tokens.length < 3) { 
+                        console.log("Comando incompleto. Use: usa [ferramenta] [objeto]"); 
+                        break; 
+                    }
                     try {
-                        // Tenta usar a ferramenta no objeto
                         if (this.salaCorrente.usa(tokens[1], tokens[2])) {
                             console.log("Ação realizada com sucesso!");
-                            if (this.#fim == true) { // Verifica se a ação levou à vitória
-                                console.log("Parabéns, você venceu o jogo!");
+                            if (this.#fim == true) { 
+                                console.log("\n*** PARABÉNS! VOCÊ VENCEU O JOGO! ***");
                             }
                         } else {
-                            console.log(`Não é possível usar '${tokens[1]}' sobre '${tokens[2]}' nesta sala ou a ferramenta/objeto não está disponível.`);
+                            console.log(`Não foi possível realizar a ação.`);
                         }
                     } catch (error) {
-                        // Lida com exceções de fim de jogo (derrota)
                         if (error.message.includes("Fim de Jogo:")) {
+                            console.log("\n*** FIM DE JOGO ***");
                             console.log(error.message); 
-                            this.indicaFimDeJogo(); // Garante que o loop será encerrado
+                            this.indicaFimDeJogo(); 
                         } else {
                             console.error("Um erro inesperado ocorreu:", error);
-                            this.indicaFimDeJogo(); // Encerra o jogo em caso de erro grave
+                            this.indicaFimDeJogo(); 
                         }
                     }
                     break;
+                
                 case "sai":
-                    // Tenta se mover para outra sala
-                    novaSala = this.salaCorrente.sai(tokens[1]);
+                    if (tokens.length < 2) { 
+                        console.log("Comando incompleto. Use: sai [nome_da_porta]"); 
+                        break; 
+                    }
+                    novaSala = this.salaCorrente.sai(tokens[1]); 
+                    
                     if (novaSala == null) {
-                        console.log("Sala desconhecida ...");
+                        console.log(`Não há uma saída chamada '${tokens[1].replace(/_/g, " ")}' daqui.`);
                     } else {
-                        this.#salaCorrente = novaSala; // Muda a sala corrente
+                        this.#salaCorrente = novaSala;
                     }
                     break;
+
+                case "descartar": // <<<<----- NOVO COMANDO ----->>>>
+                    if (tokens.length < 2) { 
+                        console.log("Comando incompleto. Use: descartar [ferramenta]"); 
+                        break; 
+                    }
+                    if (this.#mochila.remove(tokens[1])) {
+                        console.log(`A ferramenta '${tokens[1]}' foi descartada da mochila.`);
+                    } else {
+                        console.log(`A ferramenta '${tokens[1]}' não foi encontrada na mochila para descarte.`);
+                    }
+                    break;
+                
                 default:
-                    console.log("Comando desconhecido: " + tokens[0]);
+                    console.log(`Comando desconhecido: '${tokens[0]}'. Tente 'pega', 'usa', 'sai', 'inventario', 'descartar' ou 'fim'.`);
                     break;
             }
         }
-        console.log("Jogo encerrado!");
+        console.log("\n-------------------------");
+        console.log("JOGO ENCERRADO.");
+        console.log("-------------------------\n");
     }
 }
