@@ -1,0 +1,59 @@
+{
+  "codigo_construtora": 1,
+  "nome": "Construtora Alfa",
+  "nome_fantasia": "Alfa Construções",
+  "email": "contato@alfa.com",
+  "telefones": [
+    "5133334444",
+    "5199998888"
+  ],
+  "obras": [
+    {
+      "codigo_obra": 101,
+      "nome": "Condomínio Lagos",
+      "endereco": {
+        "logradouro": "Avenida das Garças",
+        "numero": "1200",
+        "complemento": "Fase 2"
+      },
+      "trabalhadores": [
+        {
+          "cpf": "11122233344",
+          "nome": "João da Silva",
+          "salario": 3200.00
+        },
+        {
+          "cpf": "22233344455",
+          "nome": "Pedro Martins",
+          "salario": 2400.00
+        },
+        {
+          "cpf": "33344455566",
+          "nome": "Carlos Ferreira",
+          "salario": 2800.00
+        }
+      ]
+    },
+    {
+      "codigo_obra": 102,
+      "nome": "Edifício Central",
+      "endereco": {
+        "logradouro": "Rua Sete de Setembro",
+        "numero": "550",
+        "complemento": null
+      },
+      "trabalhadores": [
+        {
+          "cpf": "44455566677",
+          "nome": "Ana Pereira",
+          "salario": 4500.00
+        },
+        {
+          "cpf": "55566677788",
+          "nome": "Maria Oliveira",
+          "salario": 2100.00
+        }
+      ]
+    }
+  ]
+}
