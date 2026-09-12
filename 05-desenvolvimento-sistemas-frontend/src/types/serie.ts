@@ -7,4 +7,6 @@ export interface Serie {
   producer: string;
   category: string;
   watchedDate: string;
+  rating?: number;
+  status?: 'Assistindo' | 'Finalizada' | 'Planejando' | 'Abandonada';
 }

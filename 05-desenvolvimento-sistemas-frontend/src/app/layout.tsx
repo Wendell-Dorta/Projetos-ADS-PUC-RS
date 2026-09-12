@@ -20,7 +20,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider>
             <NavBar />
-            <main className="min-h-screen bg-[#FAFAFA] p-6 pb-24">
+            <main className="min-h-screen bg-background text-foreground p-6 pb-24 transition-colors duration-300">
               {children}
             </main>
           </ThemeProvider>
