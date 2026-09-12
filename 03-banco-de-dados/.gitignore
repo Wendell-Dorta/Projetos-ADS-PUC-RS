@@ -1,0 +1,13 @@
+﻿# Database artifacts & OS files
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Documents & Archives
+*.pdf
+*.docx
+*.doc
+*.zip
+*.rar
+*.bak
