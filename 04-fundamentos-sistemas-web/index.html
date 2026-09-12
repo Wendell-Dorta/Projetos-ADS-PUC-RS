@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mundo Pet - Cuidado e Carinho em um só lugar</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/png" href="images/favicon.ico" />
+  </head>
+  <body>
+    <header class="main-header sticky-top">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="index.html"
+            ><i class="bi bi-heart-pulse-fill"></i> Mundo Pet</a
+          >
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.html"
+                  >Início</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="produtos.html">Produtos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="servicos.html">Serviços</a>
+              </li>
+            </ul>
+
+            <div
+              class="header-actions d-flex flex-column flex-lg-row align-items-stretch mt-3 mt-lg-0">
+              <a
+                href="cadastro.html"
+                class="btn btn-outline-primary mb-2 mb-lg-0"
+                >Cadastre-se</a
+              >
+              <a href="login.html" class="btn btn-primary">Entrar</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Carrossel -->
+      <section class="hero-carousel">
+        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#mainCarousel"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Slide 1"></button>
+            <button
+              type="button"
+              data-bs-target="#mainCarousel"
+              data-bs-slide-to="1"
+              aria-label="Slide 2"></button>
+            <button
+              type="button"
+              data-bs-target="#mainCarousel"
+              data-bs-slide-to="2"
+              aria-label="Slide 3"></button>
+          </div>
+
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img
+                src="images/carousel-home-welcome.png"
+                class="d-block w-100"
+                alt="Um cachorro Golden Retriever e um gato laranja descansando juntos e aconchegados no braço de um sofá bege." />
+              <div class="carousel-caption">
+                <h1 class="display-4 fw-bolder">
+                  Cuidado e carinho em um só lugar
+                </h1>
+                <p class="lead my-4 d-none d-md-block">
+                  Encontre tudo para a saúde e felicidade do seu pet. Produtos
+                  de alta qualidade, serviços especializados e muito carinho.
+                </p>
+                <a href="produtos.html" class="btn btn-primary btn-lg px-4"
+                  >Conheça Nossos Produtos</a
+                >
+              </div>
+            </div>
+
+            <div class="carousel-item">
+              <img
+                src="images/carousel-home-products.png"
+                class="d-block w-100"
+                alt="Uma mesa de madeira exibindo uma seleção de produtos premium: um pacote de ração orgânica,
+                 um frasco de shampoo, uma coleira azul escura e um brinquedo mordedor." />
+              <div class="carousel-caption">
+                <h1 class="display-4 fw-bolder">
+                  As melhores marcas com entrega rápida
+                </h1>
+                <p class="lead my-4 d-none d-md-block">
+                  Tudo o que seu melhor amigo precisa, na porta da sua casa.
+                  Rápido e fácil.
+                </p>
+                <a href="produtos.html" class="btn btn-primary btn-lg px-4"
+                  >Ver Ofertas</a
+                >
+              </div>
+            </div>
+
+            <div class="carousel-item">
+              <img
+                src="images/carousel-home-services.png"
+                class="d-block w-100"
+                alt="Uma profissional sorridente escovando um grande cão branco e peludo sobre uma mesa de tosa em um ambiente limpo." />
+              <div class="carousel-caption">
+                <h1 class="display-4 fw-bolder">
+                  Agende o Banho & Tosa do seu pet
+                </h1>
+                <p class="lead my-4 d-none d-md-block">
+                  Profissionais qualificados para um tratamento de beleza e
+                  bem-estar completo.
+                </p>
+                <a href="servicos.html" class="btn btn-primary btn-lg px-4"
+                  >Agendar Horário</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#mainCarousel"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#mainCarousel"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Acesso Rápido -->
+      <section class="container my-5">
+        <div class="row g-3 g-md-4">
+          <div class="col-6 col-lg-3">
+            <a href="produtos.html" class="quick-access-card">
+              <i class="bi bi-shop"></i>
+              <h5>Nossos Produtos</h5>
+            </a>
+          </div>
+          <div class="col-6 col-lg-3">
+            <a href="servicos.html" class="quick-access-card">
+              <i class="bi bi-calendar2-check"></i>
+              <h5>Agendamento</h5>
+            </a>
+          </div>
+          <div class="col-6 col-lg-3">
+            <a href="produtos.html" class="quick-access-card">
+              <i class="bi bi-tags-fill"></i>
+              <h5>Ofertas</h5>
+            </a>
+          </div>
+          <div class="col-6 col-lg-3">
+            <a href="login.html" class="quick-access-card">
+              <i class="bi bi-person-circle"></i>
+              <h5>Minha Conta</h5>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Destaques da Semana -->
+      <section class="container-fluid bg-light py-5">
+        <div class="container">
+          <div class="text-center mb-5">
+            <h2 class="page-title">Destaques da Semana</h2>
+            <p class="lead text-muted">
+              Os produtos mais amados pelos nossos clientes (e seus pets!).
+            </p>
+          </div>
+          <div class="row g-3 g-md-4">
+            <div class="col-6 col-md-4 col-lg-3">
+              <a
+                href="html/detalhe-racao-gato.html"
+                class="text-decoration-none text-dark d-block h-100">
+                <div class="product-card h-100">
+                  <div class="card-img-container">
+                    <img
+                      src="images/racao-premier-gatos-light.jpg"
+                      class="img-fluid"
+                      alt="Ração Gatos Light" />
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">Ração Premier Gatos Light</h5>
+                    <div class="price-group">
+                      <p class="price mb-0">R$ 89,90</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-3">
+              <a
+                href="html/detalhe-coleira-toh.html"
+                class="text-decoration-none text-dark d-block h-100">
+                <div class="product-card h-100">
+                  <div class="card-img-container">
+                    <span class="badge bg-secondary-color text-dark fw-bold"
+                      >15% OFF</span
+                    ><img
+                      src="images/coleira-toh-black.jpg"
+                      class="img-fluid"
+                      alt="Coleira Toh Black" />
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">Coleira Toh com Tag ID</h5>
+                    <div class="price-group">
+                      <p class="price mb-0">A partir de R$ 23,99</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-3">
+              <a
+                href="html/detalhe-kit-oral.html"
+                class="text-decoration-none text-dark d-block h-100">
+                <div class="product-card h-100">
+                  <div class="card-img-container">
+                    <img
+                      src="images/kit-oral-virbac.jpg"
+                      class="img-fluid"
+                      alt="Kit Oral Virbac" />
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">Kit Saúde Oral Virbac</h5>
+                    <div class="price-group">
+                      <span class="price-old">de R$ 213,32</span>
+                      <p class="price mb-0">R$ 191,99</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-3 d-none d-lg-block">
+              <a
+                href="html/detalhe-shampoo.html"
+                class="text-decoration-none text-dark d-block h-100">
+                <div class="product-card h-100">
+                  <div class="card-img-container">
+                    <img
+                      src="images/shampoo-clorexidina.jpg"
+                      class="img-fluid"
+                      alt="Shampoo Clorexidina" />
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">Shampoo Clorexidina Dug's</h5>
+                    <div class="price-group">
+                      <p class="price mb-0">R$ 42,99</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Banner de Serviço -->
+      <section class="container my-5">
+        <div class="row align-items-center service-banner-home p-4 p-md-5">
+          <div class="col-lg-7 text-center text-lg-start">
+            <h2 class="page-title">Estética e Bem-Estar</h2>
+            <p class="lead text-muted">
+              Nosso serviço de Banho & Tosa vai além da higiene. É um momento de
+              cuidado, carinho e renovação para o seu pet, com os melhores
+              produtos e profissionais.
+            </p>
+            <a href="servicos.html" class="btn btn-primary btn-lg mt-3"
+              >Saiba Mais e Agende</a
+            >
+          </div>
+          <div class="col-lg-5 d-none d-lg-block">
+            <img
+              src="images/banner-home-grooming.png"
+              class="img-fluid rounded-4"
+              alt="Um cão da raça Poodle com a tosa impecável e pelo marrom, sentado elegantemente sobre um
+               banquinho de madeira após o serviço de banho e tosa." />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-auto">
+      <div class="container text-center">
+        <p class="mb-0">
+          &copy; 2025 Mundo Pet. Todos os direitos reservados. Desenvolvido por
+          Wendell de Souza Dorta.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>

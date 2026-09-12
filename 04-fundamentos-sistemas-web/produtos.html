@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Produtos - Mundo Pet</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/png" href="images/favicon.ico" />
+  </head>
+  
+  <body>
+    <header class="main-header sticky-top">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="index.html"
+            ><i class="bi bi-heart-pulse-fill"></i> Mundo Pet</a
+          >
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+            aria-controls="mainNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Início</a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="produtos.html"
+                  >Produtos</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="servicos.html">Serviços</a>
+              </li>
+            </ul>
+            <div
+              class="header-actions d-flex flex-column flex-lg-row align-items-stretch mt-3 mt-lg-0">
+              <a
+                href="cadastro.html"
+                class="btn btn-outline-primary mb-2 mb-lg-0"
+                >Cadastre-se</a
+              >
+              <a href="login.html" class="btn btn-primary">Entrar</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container my-5">
+      <!-- Navegação de produtos -->
+      <section class="text-center">
+        <h1 class="page-title">Nossa Vitrine de Produtos</h1>
+        <div class="product-filter-container my-4">
+          <div
+            class="btn-group flex-wrap justify-content-center"
+            role="group"
+            aria-label="Filtro de categorias de produtos">
+            <button class="btn btn-filter active" data-filter="todos">
+              Todos
+            </button>
+            <button class="btn btn-filter" data-filter="acessorios">
+              Acessórios
+            </button>
+            <button class="btn btn-filter" data-filter="racoes">Rações</button>
+            <button class="btn btn-filter" data-filter="higiene">
+              Higiene
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lista de Produtos -->
+      <section class="mt-5">
+        <!-- Produto 1: Coleira -->
+        <div id="product-grid" class="row g-3 g-md-4">
+          <div class="col-6 col-md-4 col-lg-3">
+            <a
+              href="html/detalhe-coleira-toh.html"
+              class="text-decoration-none text-dark d-block h-100">
+              <div class="product-card h-100" data-category="acessorios">
+                <div class="card-img-container">
+                  <span class="badge bg-secondary-color text-dark fw-bold"
+                    >15% OFF</span
+                  >
+                  <img
+                    src="images/coleira-toh-black.jpg"
+                    class="img-fluid"
+                    alt="Coleira Toh Black" />
+                  <button class="btn btn-add-to-cart">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Coleira Toh com Tag ID</h5>
+                  <div class="price-group">
+                    <span class="price-old">de R$ 28,22</span>
+                    <p class="price mb-0">A partir de R$ 23,99</p>
+                    <p class="price-subscription mb-0">
+                      <i class="bi bi-arrow-repeat"></i> R$ 21,59 para
+                      assinantes
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Produto 2: Caixa de Transporte -->
+          <div class="col-6 col-md-4 col-lg-3">
+            <a
+              href="html/detalhe-caixa.html"
+              class="text-decoration-none text-dark d-block h-100">
+              <div class="product-card h-100" data-category="acessorios">
+                <div class="card-img-container">
+                  <img
+                    src="images/caixa-transporte-durapets.jpg"
+                    class="img-fluid"
+                    alt="Caixa de Transporte" />
+                  <button class="btn btn-add-to-cart">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Caixa de Transporte Falcon</h5>
+                  <div class="price-group">
+                    <p class="price mb-0">R$ 45,99</p>
+                    <p class="price-subscription mb-0">
+                      <i class="bi bi-arrow-repeat"></i> R$ 41,39 para
+                      assinantes
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Produto 3: Ração Golden -->
+          <div class="col-6 col-md-4 col-lg-3">
+            <a
+              href="html/detalhe-racao-golden.html"
+              class="text-decoration-none text-dark d-block h-100">
+              <div class="product-card h-100" data-category="racoes">
+                <div class="card-img-container">
+                  <span class="badge bg-secondary-color text-dark fw-bold"
+                    >10% OFF</span
+                  >
+                  <img
+                    src="images/racao-premier-golden.jpg"
+                    class="img-fluid"
+                    alt="Ração Golden Retriever" />
+                  <button class="btn btn-add-to-cart">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Ração Premier Golden - 12kg</h5>
+                  <div class="price-group">
+                    <span class="price-old">de R$ 311,10</span>
+                    <p class="price mb-0">R$ 279,99</p>
+                    <p class="price-subscription mb-0">
+                      <i class="bi bi-arrow-repeat"></i> R$ 251,99 para
+                      assinantes
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Produto 4: Ração Gato -->
+          <div class="col-6 col-md-4 col-lg-3">
+            <a
+              href="html/detalhe-racao-gato.html"
+              class="text-decoration-none text-dark d-block h-100">
+              <div class="product-card h-100" data-category="racoes">
+                <div class="card-img-container">
+                  <img
+                    src="images/racao-premier-gatos-light.jpg"
+                    class="img-fluid"
+                    alt="Ração Gatos Light" />
+                  <button class="btn btn-add-to-cart">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Ração Premier Gatos Light - 1.5kg</h5>
+                  <div class="price-group">
+                    <p class="price mb-0">R$ 89,90</p>
+                    <p class="price-subscription mb-0">
+                      <i class="bi bi-arrow-repeat"></i> R$ 80,91 para
+                      assinantes
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Produto 5: Shampoo -->
+          <div class="col-6 col-md-4 col-lg-3">
+            <a
+              href="html/detalhe-shampoo.html"
+              class="text-decoration-none text-dark d-block h-100">
+              <div class="product-card h-100" data-category="higiene">
+                <div class="card-img-container">
+                  <img
+                    src="images/shampoo-clorexidina.jpg"
+                    class="img-fluid"
+                    alt="Shampoo Clorexidina" />
+                  <button class="btn btn-add-to-cart">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Shampoo Clorexidina Dug's</h5>
+                  <div class="price-group">
+                    <p class="price mb-0">R$ 42,99</p>
+                    <p class="price-subscription mb-0">
+                      <i class="bi bi-arrow-repeat"></i> R$ 38,69 para
+                      assinantes
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          
+          <!-- Produto 6: Kit Oral Vibrac -->
+          <div class="col-6 col-md-4 col-lg-3">
+            <a
+              href="html/detalhe-kit-oral.html"
+              class="text-decoration-none text-dark d-block h-100">
+              <div class="product-card h-100" data-category="higiene">
+                <div class="card-img-container">
+                  <img
+                    src="images/kit-oral-virbac.jpg"
+                    class="img-fluid"
+                    alt="Kit Oral Virbac" />
+                  <button class="btn btn-add-to-cart">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Kit Saúde Oral Virbac</h5>
+                  <div class="price-group">
+                    <span class="price-old">de R$ 213,32</span>
+                    <p class="price mb-0">R$ 191,99</p>
+                    <p class="price-subscription mb-0">
+                      <i class="bi bi-arrow-repeat"></i> R$ 172,79 para
+                      assinantes
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-auto">
+      <div class="container text-center">
+        <p class="mb-0">
+          &copy; 2025 Mundo Pet. Todos os direitos reservados. Desenvolvido por
+          Wendell de Souza Dorta.
+        </p>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>

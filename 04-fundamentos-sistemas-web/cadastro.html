@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro - Mundo Pet</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/png" href="images/favicon.ico" />
+  </head>
+  <body class="body-full-page">
+    <header class="access-header">
+      <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand" href="index.html"
+          ><i class="bi bi-heart-pulse-fill"></i> Mundo Pet</a
+        >
+        <div class="secure-notice">
+          <i class="bi bi-shield-lock-fill"></i> Ambiente Seguro
+        </div>
+      </div>
+    </header>
+
+    <main class="container access-container">
+      <div class="col-lg-8 mx-auto">
+        <div class="text-center">
+          <h1 class="page-title">Crie sua Conta</h1>
+          <p class="lead text-muted">
+            É rápido e fácil! Complete as etapas para ter acesso a todos os
+            nossos serviços.
+          </p>
+        </div>
+
+        <form class="multi-step-form mt-5 access-card">
+          <div class="form-step active">
+            <h4 class="mb-4">1. Seus Dados Pessoais</h4>
+
+            <div class="mb-3">
+              <label for="fullName" class="form-label">Nome Completo</label>
+              <input
+                type="text"
+                class="form-control"
+                id="fullName"
+                placeholder="Digite seu nome completo"
+                required />
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="cpf" class="form-label">CPF</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cpf"
+                  placeholder="000.000.000-00"
+                  required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Telefone / Celular</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phone"
+                  placeholder="(00) 90000-0000"
+                  required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">E-mail</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="seu.email@exemplo.com"
+                required />
+            </div>
+
+            <div class="form-navigation">
+              <button type="button" class="btn btn-primary btn-next ms-auto">
+                Próximo <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-step">
+            <h4 class="mb-4">2. Seu Endereço</h4>
+            <div class="row">
+              <div class="col-md-5 mb-3">
+                <label for="cep" class="form-label">CEP</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cep"
+                  placeholder="00000-000"
+                  required />
+              </div>
+              <div class="col-md-7 mb-3">
+                <label for="street" class="form-label"
+                  >Nome da Rua (Logradouro)</label
+                >
+                <input type="text" class="form-control" id="street" required />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="number" class="form-label">Número</label>
+                <input type="text" class="form-control" id="number" required />
+              </div>
+              <div class="col-md-8 mb-3">
+                <label for="complement" class="form-label">Complemento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="complement"
+                  placeholder="Apto, Bloco, Casa, etc." />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="neighborhood" class="form-label">Bairro</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="neighborhood"
+                  required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="city" class="form-label">Cidade</label>
+                <input type="text" class="form-control" id="city" required />
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="state" class="form-label">Estado</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="state"
+                  placeholder="UF"
+                  required />
+              </div>
+            </div>
+            <div class="form-text">
+              Usado para o serviço de Tele-Busca e entrega de produtos.
+            </div>
+
+            <div class="form-navigation mt-4">
+              <button type="button" class="btn btn-outline-secondary btn-prev">
+                <i class="bi bi-arrow-left"></i> Anterior
+              </button>
+              <button type="button" class="btn btn-primary btn-next">
+                Próximo <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-step">
+            <h4 class="mb-4">3. Dados do seu Pet</h4>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="petName" class="form-label">Nome do Pet</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="petName"
+                  placeholder="Nome do seu amigo"
+                  required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="petBreed" class="form-label">Raça</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="petBreed"
+                  placeholder="Ex: Golden Retriever, Siamês" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="petAge" class="form-label">Idade do Pet (anos)</label>
+              <input
+                type="number"
+                class="form-control"
+                id="petAge"
+                min="0"
+                value="0" />
+            </div>
+
+            <div class="form-navigation">
+              <button type="button" class="btn btn-outline-secondary btn-prev">
+                <i class="bi bi-arrow-left"></i> Anterior
+              </button>
+              <button type="button" class="btn btn-primary btn-next">
+                Próximo <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-step">
+            <h4 class="mb-4">4. Acesso à Conta</h4>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="password" class="form-label">Crie uma Senha</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="confirmPassword" class="form-label"
+                  >Confirme a Senha</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="confirmPassword"
+                  required />
+              </div>
+            </div>
+
+            <div class="form-check mb-4">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="terms"
+                required />
+              <label class="form-check-label" for="terms"
+                >Concordo com os <a href="#">Termos de Serviço</a> e a
+                <a href="#">Política de Privacidade</a>.</label
+              >
+            </div>
+
+            <div class="form-navigation">
+              <button type="button" class="btn btn-outline-secondary btn-prev">
+                <i class="bi bi-arrow-left"></i> Anterior
+              </button>
+              <button type="submit" class="btn btn-success">
+                Finalizar Cadastro
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-auto">
+      <div class="container text-center">
+        <p class="mb-0">
+          &copy; 2025 Mundo Pet. Todos os direitos reservados. Desenvolvido por
+          Wendell de Souza Dorta.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
