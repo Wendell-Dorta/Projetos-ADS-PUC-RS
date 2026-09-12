@@ -1,0 +1,10 @@
+# Dependencies and system files
+.DS_Store
+Thumbs.db
+
+# Documents & Archives
+*.pdf
+*.docx
+*.doc
+*.zip
+*.rar

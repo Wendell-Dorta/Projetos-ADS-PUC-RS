@@ -1,0 +1,574 @@
+/* 1. VARIÁVEIS DE DESIGN E CONFIGURAÇÕES GLOBAIS */
+:root {
+  /* Cor principal (azul) - Usada para elementos de destaque, botões e links. */
+  --primary-color: #0077b6;
+  /* Cor secundária (laranja/pêssego) - Usada para destaques, badges e elementos de atenção. */
+  --secondary-color: #f7a072;
+  /* Cor de fundo principal da página. */
+  --background-color: #f8f9fa;
+  /* Cor de fundo para superfícies, como cards, cabeçalhos e menus. */
+  --surface-color: #ffffff;
+  /* Cor principal do texto. */
+  --text-color: #212529;
+  /* Cor do texto secundário ou atenuado (muted). */
+  --text-muted-color: #6c757d;
+  /* Raio padrão para cantos arredondados. */
+  --border-radius: 0.75rem;
+  /* Sombra padrão para elevação de componentes (ex: cards, cabeçalhos). */
+  --box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+}
+
+body {
+  /* Define a família de fontes primária, priorizando "Inter" e fontes de sistema. */
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  /* Aplica a cor de fundo global definida na variável. */
+  background-color: var(--background-color);
+  /* Aplica a cor de texto global. */
+  color: var(--text-color);
+  /* Define o espaçamento vertical padrão do texto. */
+  line-height: 1.6;
+}
+
+/* 2. COMPONENTE: CABEÇALHO E NAVEGAÇÃO */
+.main-header {
+  /* Cor de fundo do cabeçalho (geralmente branco ou a cor de superfície). */
+  background-color: var(--surface-color);
+  /* Aplica a sombra padrão para dar elevação. */
+  box-shadow: var(--box-shadow);
+}
+
+.main-header .navbar-brand {
+  /* Fonte extra-negrito para o logo/nome da marca. */
+  font-weight: 800;
+  /* Tamanho grande para o logo. */
+  font-size: 1.8rem;
+  /* Cor primária para destacar a marca. */
+  color: var(--primary-color);
+}
+
+.main-header .nav-link {
+  /* Peso da fonte semi-negrito para os links de navegação. */
+  font-weight: 600;
+  /* Cor atenuada para os links em estado normal. */
+  color: var(--text-muted-color);
+  /* Transição suave para a mudança de cor ao interagir. */
+  transition: color 0.2s ease-in-out;
+}
+
+.main-header .nav-link.active,
+.main-header .nav-link:hover {
+  /* Cor primária ao passar o mouse ou quando o link está ativo. */
+  color: var(--primary-color);
+}
+
+.header-actions .btn {
+  /* Espaçamento entre os botões de ação no cabeçalho. */
+  margin-left: 0.5rem;
+}
+
+/* 3. COMPONENTE: BOTÕES PADRONIZADOS */
+.btn-primary {
+  /* Cor de fundo e borda definida pela cor primária. */
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  /* Cantos completamente arredondados (formato "pílula"). */
+  border-radius: 50px;
+  /* Preenchimento otimizado. */
+  padding: 0.6rem 1.5rem;
+  /* Peso da fonte semi-negrito. */
+  font-weight: 600;
+  /* Transição suave de cor ao interagir. */
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-primary:hover {
+  /* Cor de fundo e borda ligeiramente mais escura no hover. */
+  background-color: #005a8d;
+  border-color: #005a8d;
+}
+
+.btn-outline-primary {
+  /* Borda e cor do texto definidas pela cor primária. */
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  /* Cantos completamente arredondados (formato "pílula"). */
+  border-radius: 50px;
+  /* Preenchimento otimizado. */
+  padding: 0.6rem 1.5rem;
+  /* Peso da fonte semi-negrito. */
+  font-weight: 600;
+  /* Transição suave de cor ao interagir. */
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-outline-primary:hover {
+  /* Inverte as cores no hover: fundo primário e texto de superfície (preenchido). */
+  background-color: var(--primary-color);
+  color: var(--surface-color);
+  border-color: var(--primary-color);
+}
+
+/* 4. LAYOUT DE PÁGINA E SEÇÕES */
+.page-title {
+  /* Fonte extra-negrito para títulos de página. */
+  font-weight: 800;
+  /* Cor principal para o título. */
+  color: var(--text-color);
+  /* Espaçamento inferior padrão. */
+  margin-bottom: 2rem;
+}
+
+/* 5. COMPONENTE: CARD DE PRODUTO */
+.product-card {
+  /* Fundo de superfície (branco). */
+  background-color: var(--surface-color);
+  /* Borda sutil. */
+  border: 1px solid #eee;
+  /* Cantos arredondados usando a variável padrão. */
+  border-radius: var(--border-radius);
+  /* Transição para efeito de sombra no hover. */
+  transition: box-shadow 0.2s ease-in-out;
+  /* Configuração de Flexbox para organizar o conteúdo verticalmente. */
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  /* Aplica a sombra padrão para dar um efeito de elevação no hover. */
+  box-shadow: var(--box-shadow);
+}
+
+.card-img-container {
+  /* Estabelece o contexto para posicionamento absoluto de elementos internos (ex: badge, botão). */
+  position: relative;
+  /* Preenchimento interno. */
+  padding: 0.5rem;
+  /* Separador visual entre a imagem e o corpo do card. */
+  border-bottom: 1px solid #eee;
+}
+
+.product-card img {
+  /* Arredonda os cantos da imagem (levemente menos que o do card). */
+  border-radius: calc(var(--border-radius) - 5px);
+  /* Garante que a imagem preencha o contêiner sem distorção. */
+  object-fit: contain;
+}
+
+/* Badge de Desconto */
+.card-img-container .badge {
+  /* Posicionamento absoluto no canto superior esquerdo. */
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  /* Estilização para o badge. */
+  font-size: 0.7rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+}
+
+.bg-secondary-color {
+  /* Classe utilitária para aplicar a cor secundária como fundo (sobrescreve outras regras). */
+  background-color: var(--secondary-color) !important;
+}
+
+/* Botão de Adicionar (+) */
+.btn-add-to-cart {
+  /* Posicionamento absoluto no canto inferior direito. */
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  /* Fundo semi-transparente para destaque discreto. */
+  background-color: rgba(33, 37, 41, 0.8);
+  color: white;
+  /* Formato circular. */
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  /* Centraliza o ícone (ou o texto '+') com Flexbox. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  /* Inicialmente invisível e pequeno (efeito de entrada no hover). */
+  opacity: 0;
+  transform: scale(0.8);
+  /* Transição suave para o efeito de entrada. */
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.product-card:hover .btn-add-to-cart {
+  /* Torna o botão visível e retorna ao tamanho normal no hover do card. */
+  opacity: 1;
+  transform: scale(1);
+}
+
+.product-card .card-body {
+  /* Preenchimento interno padrão. */
+  padding: 0.75rem;
+  /* Flexbox para organização do corpo do card. */
+  display: flex;
+  flex-direction: column;
+  /* Permite que o corpo do card cresça para ocupar o espaço restante. */
+  flex-grow: 1;
+}
+.product-card .card-title {
+  /* Estilo do título do produto. */
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Hierarquia de Preços */
+.price-group {
+  /* Força o grupo de preços a se alinhar ao final do corpo do card. */
+  margin-top: auto;
+  /* Ajuste de espaçamento de linha. */
+  line-height: 1.3;
+}
+
+.price-old {
+  /* Estilo para o preço riscado (preço original). */
+  font-size: 0.8rem;
+  text-decoration: line-through;
+  /* Cor atenuada. */
+  color: var(--text-muted-color);
+}
+
+.product-card .price {
+  /* Estilo do preço principal (destaque). */
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+.price-subscription {
+  /* Estilo para preço de assinatura ou condições especiais. */
+  font-size: 0.8rem;
+  font-weight: 600;
+  /* Cor primária para destaque. */
+  color: var(--primary-color);
+}
+
+.price-subscription i {
+  /* Tamanho menor para o ícone associado à assinatura. */
+  font-size: 0.7rem;
+}
+
+.product-card .price-and-button {
+  /* Garante que o grupo de preço/botão esteja no final. */
+  margin-top: auto;
+}
+
+/* 6. COMPONENTES: PÁGINA DE SERVIÇOS */
+.service-hero {
+  /* Gradiente sutil no fundo usando as cores primária e secundária. */
+  background: linear-gradient(
+    to right,
+    rgba(0, 119, 182, 0.05),
+    rgba(247, 160, 114, 0.05)
+  );
+  /* Preenchimento amplo. */
+  padding: 4rem;
+  /* Cantos arredondados. */
+  border-radius: var(--border-radius);
+}
+
+.service-hero .display-4 {
+  /* Título principal do hero em cor primária. */
+  color: var(--primary-color);
+}
+
+.feature-list {
+  /* Remove estilos de lista padrão. */
+  list-style: none;
+  padding-left: 0;
+}
+
+.feature-list li {
+  /* Estilo de item de lista. */
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  /* Flexbox para alinhar ícone e texto. */
+  display: flex;
+  align-items: start;
+}
+
+.feature-list .icon {
+  /* Estilo do ícone de recurso/vantagem. */
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-right: 1rem;
+  margin-top: 0.25rem;
+}
+
+.step-card {
+  /* Fundo de superfície, preenchimento, arredondamento e alinhamento. */
+  background-color: var(--surface-color);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  /* Aplica sombra e garante que cards de diferentes alturas sejam tratados. */
+  box-shadow: var(--box-shadow);
+  height: 100%;
+  /* Transição para o efeito de elevação no hover. */
+  transition: transform 0.2s ease-in-out;
+}
+
+.step-card:hover {
+  /* Efeito de elevação sutil no hover. */
+  transform: translateY(-5px);
+}
+
+.step-card .icon {
+  /* Estilo do ícone de passo do processo. */
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.step-card h5 {
+  /* Estilo do título do passo. */
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.step-card p {
+  /* Texto atenuado para a descrição do passo. */
+  color: var(--text-muted-color);
+}
+
+/* 7. COMPONENTES: PÁGINAS DE ACESSO (LOGIN/CADASTRO) */
+.access-header {
+  /* Estilo de cabeçalho específico para páginas de acesso (ex: login, cadastro). */
+  background-color: var(--surface-color);
+  padding: 1rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.access-header .navbar-brand {
+  /* Estilo da marca no cabeçalho de acesso. */
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+.access-header .secure-notice {
+  /* Aviso de segurança ou informação complementar no cabeçalho. */
+  font-weight: 600;
+  color: var(--text-muted-color);
+}
+
+.body-full-page {
+  /* Garante que o corpo ocupe 100% da altura da viewport. */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.body-full-page main {
+  /* Permite que o conteúdo principal preencha o espaço entre cabeçalho e rodapé. */
+  flex-grow: 1;
+  /* Centraliza o conteúdo (formulário) verticalmente. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.access-container {
+  /* Largura máxima e centralização para o container de formulários. */
+  max-width: 900px;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.access-card {
+  /* Card principal do formulário (fundo, preenchimento, arredondamento e sombra). */
+  background-color: var(--surface-color);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.form-step {
+  /* Esconde os passos do formulário por padrão (para formulários multi-passos). */
+  display: none;
+}
+
+.form-step.active {
+  /* Torna o passo atual visível. */
+  display: block;
+}
+
+.form-navigation {
+  /* Estiliza a navegação de botões (próximo/anterior) em formulários multi-passos. */
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+/* 8. COMPONENTE: FILTRO DE PRODUTOS */
+.product-filter-container .btn-group {
+  /* Espaçamento entre os botões de filtro. */
+  gap: 0.5rem;
+}
+
+.btn-filter {
+  /* Estilo base dos botões de filtro (formato pílula, cor de fundo, texto atenuado). */
+  border-radius: 50px !important;
+  font-weight: 600;
+  border: 1px solid #dee2e6;
+  background-color: var(--surface-color);
+  color: var(--text-muted-color);
+  padding: 0.5rem 1.5rem;
+  /* Transição para o efeito de hover/ativo. */
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-filter:hover {
+  /* Fundo ligeiramente escuro e cor de texto principal no hover. */
+  background-color: #e9ecef;
+  color: var(--text-color);
+}
+
+.btn-filter.active {
+  /* Estilo ativo (fundo primário, texto branco). */
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* 9. ESTILOS PARA PÁGINA DE DETALHES DO PRODUTO */
+.breadcrumb-item a {
+  /* Cor primária para links no breadcrumb. */
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.product-image-gallery {
+  /* Torna a galeria de imagens "fixa" ao rolar a página (Sticky). */
+  position: sticky;
+  top: 100px; /* Distância do topo */
+}
+.price-group-lg .price-old {
+  /* Tamanho maior para o preço antigo na página de detalhes. */
+  font-size: 1rem;
+}
+.price-group-lg .price {
+  /* Tamanho de fonte muito grande para o preço principal na página de detalhes. */
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+.price-group-lg .price-subscription {
+  /* Tamanho maior para a informação de assinatura na página de detalhes. */
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.product-details-tabs .nav-tabs {
+  /* Borda inferior mais espessa para as abas. */
+  border-bottom: 2px solid #dee2e6;
+}
+.product-details-tabs .nav-link {
+  /* Estilo padrão para links de abas (texto atenuado, semi-negrito). */
+  color: var(--text-muted-color);
+  font-weight: 600;
+}
+.product-details-tabs .nav-link.active {
+  /* Estilo da aba ativa (cor primária, linha inferior em cor primária). */
+  color: var(--primary-color);
+  border-color: #dee2e6 #dee2e6 var(--surface-color); /* Borda lateral e topo */
+  border-bottom: 2px solid var(--primary-color); /* Linha inferior de destaque */
+}
+.product-details-tabs .tab-content {
+  /* Estilo do container de conteúdo da aba (preenchimento, fundo, bordas). */
+  padding: 1.5rem;
+  background-color: var(--surface-color);
+  border: 1px solid #dee2e6;
+  border-top: none;
+  /* Arredondamento apenas nas bordas inferiores. */
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+/* 10. COMPONENTES DA PÁGINA INICIAL (INDEX) */
+/* Cartão de Acesso Rápido */
+.quick-access-card {
+  /* Define o cartão como bloco, fundo de superfície, alinhamento e aparência de link. */
+  display: block;
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  color: var(--text-color);
+  text-decoration: none;
+  /* Sombra e transição para efeito no hover. */
+  box-shadow: var(--box-shadow);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  height: 100%;
+}
+.quick-access-card:hover {
+  /* Efeito de elevação e sombra mais intensa no hover. */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  /* Cor primária para o texto no hover. */
+  color: var(--primary-color);
+}
+.quick-access-card i {
+  /* Estilo do ícone no cartão de acesso rápido. */
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  display: block;
+}
+.quick-access-card h5 {
+  /* Estilo do título do cartão de acesso rápido. */
+  font-weight: 700;
+}
+
+/* Banner de Serviço na Home */
+.service-banner-home {
+  /* Gradiente sutil no fundo usando as cores primária e secundária. */
+  background: linear-gradient(
+    to right,
+    rgba(0, 119, 182, 0.05),
+    rgba(247, 160, 114, 0.05)
+  );
+  /* Cantos arredondados. */
+  border-radius: var(--border-radius);
+}
+
+/* 11. COMPONENTE: CARROSSEL DE DESTAQUE (HERO) */
+.hero-carousel .carousel-item {
+  /* Altura do item do carrossel (ajustável). */
+  height: 60vh;
+  min-height: 400px;
+}
+
+.hero-carousel .carousel-item img {
+  /* Garante que a imagem preencha o item e ajusta o brilho para melhor legibilidade do texto. */
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+
+.hero-carousel .carousel-caption {
+  /* Posiciona a legenda para cobrir toda a área do item. */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  /* Usa Flexbox para centralizar o texto da legenda. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.hero-carousel .carousel-caption h1 {
+  /* Estilo do título principal no carrossel. */
+  font-weight: 800;
+}
