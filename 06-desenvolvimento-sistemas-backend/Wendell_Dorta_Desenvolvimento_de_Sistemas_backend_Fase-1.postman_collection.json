@@ -1,0 +1,313 @@
+{
+	"info": {
+		"_postman_id": "fe0e6937-4a83-421c-9c39-fc0ae07e2ca2",
+		"name": "estudante_Desenvolvimento_de_Sistemas_backend_Fase-1",
+		"description": "Coleção de requisições Postman para teste do ServicoGestao (Fase 1) do Sistema de Controle de Planos de Operadora.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ServicoGestao (ServicoGerenciamentoPlanos)",
+			"item": [
+				{
+					"name": "Lista Clientes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/clientes",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"clientes"
+							]
+						},
+						"description": "### GET /gerenciaplanos/clientes (ou /gestao/clientes)\n\nRecupera a lista completa de clientes cadastrados no sistema.\n\n### Resposta de Sucesso (200 OK):\nArray de objetos de clientes `{ codigo, nome, email }`."
+					},
+					"response": []
+				},
+				{
+					"name": "Lista Planos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/planos",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"planos"
+							]
+						},
+						"description": "### GET /gerenciaplanos/planos (ou /gestao/planos)\n\nRecupera a lista de planos de internet e serviços cadastrados.\n\n### Resposta de Sucesso (200 OK):\nArray de objetos de planos `{ codigo, nome, custoMensal, data, descricao }`."
+					},
+					"response": []
+				},
+				{
+					"name": "Nova Assinatura",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"codCli\": 3,\n    \"codPlano\": 5,\n    \"custoFinal\": 299.90,\n    \"descricao\": \"Cliente negociou valor promocional no contrato de fidelidade anual.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/assinaturas",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas"
+							]
+						},
+						"description": "### POST /gerenciaplanos/assinaturas (ou /gestao/assinaturas)\n\nCadastra uma nova assinatura de plano para um determinado cliente.\n\n#### Corpo da Requisição:\n- `codCli` (número): Código identificador do cliente.\n- `codPlano` (número): Código identificador do plano.\n- `custoFinal` (número): Valor promocional com desconto durante o período de fidelidade.\n- `descricao` (texto): Detalhes e observações sobre o contrato ou oferta."
+					},
+					"response": []
+				},
+				{
+					"name": "Atualiza Custo Mensal Plano",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"custoMensal\": 129.90\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/planos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"planos",
+								"1"
+							]
+						},
+						"description": "### PATCH /gerenciaplanos/planos/:idPlano (ou /gestao/planos/:idPlano)\n\nAtualiza o valor do custo mensal de um plano existente.\n\n#### Corpo da Requisição:\n- `custoMensal` (número, obrigatório): Novo valor da mensalidade do plano."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas Ativos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/assinaturas/ATIVOS",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas",
+								"ATIVOS"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturas/ATIVOS (ou /gestao/assinaturas/ATIVOS)\n\nRetorna apenas as assinaturas que se encontram ativas no momento (pagamento efetuado nos últimos 30 dias)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas Todos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/assinaturas/TODOS",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas",
+								"TODOS"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturas/TODOS (ou /gestao/assinaturas/TODOS)\n\nRetorna a listagem completa de todas as assinaturas (ativas e canceladas)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas Cancelados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/assinaturas/CANCELADOS",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturas",
+								"CANCELADOS"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturas/CANCELADOS (ou /gestao/assinaturas/CANCELADOS)\n\nRetorna as assinaturas canceladas ou inativas (sem pagamento nos últimos 30 dias)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas por Cliente",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/asscli/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"asscli",
+								"2"
+							]
+						},
+						"description": "### GET /gerenciaplanos/asscli/:codcli (ou /gestao/assinaturascliente/:codcli)\n\nRetorna as assinaturas contratadas por um cliente específico (ex: codcli = 2)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assinaturas por Plano",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/gerenciaplanos/assinaturaplano/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"gerenciaplanos",
+								"assinaturaplano",
+								"2"
+							]
+						},
+						"description": "### GET /gerenciaplanos/assinaturaplano/:codplano (ou /gestao/assinaturasplano/:codplano)\n\nRetorna todas as assinaturas vinculadas a um determinado plano (ex: codplano = 2)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ServicoFaturamento (Fase 2)",
+			"item": [
+				{
+					"name": "Registrar Pagamento (Fase 2)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dia\": 1,\n    \"mes\": 1,\n    \"ano\": 2025,\n    \"codAss\": 1,\n    \"valorPago\": 79.90\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/registrarpagamento",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"registrarpagamento"
+							]
+						},
+						"description": "Endpoint reservado para a Fase 2 (ServicoFaturamento)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ServicoPlanosAtivos (Fase 2)",
+			"item": [
+				{
+					"name": "Assinaturas Validas (Fase 2)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/planosativos/5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"planosativos",
+								"5"
+							]
+						},
+						"description": "Endpoint reservado para a Fase 2 (ServicoPlanosAtivos)."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

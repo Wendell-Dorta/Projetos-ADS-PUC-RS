@@ -1,0 +1,13 @@
+services:
+  servico-gestao:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: servico-gestao-container
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=file:./dev.db
+      - NODE_ENV=production
+    restart: unless-stopped
